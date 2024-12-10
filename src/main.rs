@@ -1,10 +1,13 @@
 #![no_std]
 #![no_main]
 #![feature(impl_trait_in_assoc_type)]
+#![feature(associated_type_defaults)]
 
-use core::str;
+mod dcc;
+mod devices;
 
 use button_driver::{Button, ButtonConfig};
+use dcc::Operations;
 use dcc_rs::{
     DccInterruptHandler,
     packets::{Direction, SerializeBuffer, SpeedAndDirection},
@@ -24,14 +27,12 @@ use esp_hal::{
     spi::master::Spi,
     timer::timg::TimerGroup,
 };
+use esp_println::println;
 use fugit::RateExtU32;
 use hal::prelude::*;
 use ssd1331::{DisplayRotation, Ssd1331};
 
-mod devices;
-pub(crate) mod pins;
-
-const LCD_ADDRESS: u8 = 0x3f; // Also might be 0x27
+use devices::pins;
 
 #[esp_hal_embassy::main]
 async fn main(spawner: Spawner) {
@@ -42,13 +43,11 @@ async fn main(spawner: Spawner) {
     let timg0 = TimerGroup::new(p.TIMG0);
     esp_hal_embassy::init(timg0.timer0);
 
-    // DCC pins and devices
-
     // One ADC powers both modes' current sense, so we define it out here and populate it in each section
     let mut adc_config = AdcConfig::new();
 
-    // Set up operations mode pins
-    {
+    // Functions to block out initialization for easier reading
+    let init_operations_dcc = || {
         use devices::dcc::operations::*;
         critical_section::with(|cs| {
             // Add current sense to ADC and add the ADC pin as a resource
@@ -83,41 +82,47 @@ async fn main(spawner: Spawner) {
 
             TIMER.replace(cs, Some(timer0));
         });
-    }
+    };
 
+    let init_display = || {
+        // SPI
+        let (sck, mosi): (pins::spi::Sck, pins::spi::Mosi) = (
+            Output::new_typed(p.GPIO8, Level::Low),
+            Output::new_typed(p.GPIO10, Level::Low),
+        );
+
+        let spi =
+            Spi::<Blocking, SPI2>::new_typed_with_config(p.SPI2, esp_hal::spi::master::Config {
+                frequency: 50_000_000u32.Hz(),
+                ..Default::default()
+            })
+            .with_sck(sck)
+            .with_mosi(mosi);
+
+        let dc: pins::spi::Dc = Output::new_typed(p.GPIO7, Level::Low);
+
+        Ssd1331::new(spi, dc, DisplayRotation::Rotate0)
+    };
+
+    // Begin calling setup functions and create devices
+
+    // DCC pins and devices
     // TODO: Set up service mode pins
-    {}
+    init_operations_dcc();
 
     // Populate the ADC device with our current sense pins now that they have been initialized for both modes
     critical_section::with(|cs| {
         ADC.replace(cs, Some(Adc::new(p.ADC1, adc_config)));
     });
 
-    // Set up general use pins
-
-    // SPI
-    let (sck, mosi): (pins::spi::Sck, pins::spi::Mosi) = (
-        Output::new_typed(p.GPIO8, Level::Low),
-        Output::new_typed(p.GPIO10, Level::Low),
-    );
-    let spi = Spi::<Blocking, SPI2>::new_typed_with_config(p.SPI2, esp_hal::spi::master::Config {
-        frequency: 50_000_000u32.Hz(),
-        ..Default::default()
-    })
-    .with_sck(sck)
-    .with_mosi(mosi);
-
-    // Create OLED interface via SPI
-
+    // Create OLED display via SPI
+    let mut display = init_display();
     let mut rst: pins::spi::Res = Output::new_typed(p.GPIO9, Level::Low);
-    let dc: pins::spi::Dc = Output::new_typed(p.GPIO7, Level::Low);
-    let mut display = Ssd1331::new(spi, dc, DisplayRotation::Rotate0);
-    let mut delay = Delay::new();
-    display.reset(&mut rst, &mut delay).unwrap();
-    display.set_rotation(DisplayRotation::Rotate180).unwrap();
-    display.init().unwrap();
+    display.reset(&mut rst, &mut Delay::new()).unwrap();
+    display.clear();
     display.flush().unwrap();
-    let (w, h) = display.dimensions();
+
+    // Do some fun stuff with the oled
     embedded_graphics::primitives::Triangle::new(
         Point::new(8, 16 + 16),
         Point::new(8 + 16, 16 + 16),
@@ -130,6 +135,10 @@ async fn main(spawner: Spawner) {
     .draw(&mut display)
     .unwrap();
     display.flush().unwrap();
+
+    critical_section::with(|cs| {
+        devices::DISPLAY.replace(cs, Some(display));
+    });
 
     // Create the rotary encoder device
 
