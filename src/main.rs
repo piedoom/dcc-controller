@@ -119,7 +119,8 @@ async fn main(spawner: Spawner) {
     let mut display = init_display();
     let mut rst: pins::spi::Res = Output::new_typed(p.GPIO9, Level::Low);
     display.reset(&mut rst, &mut Delay::new()).unwrap();
-    display.clear();
+    display.set_rotation(DisplayRotation::Rotate180).unwrap();
+    display.init().unwrap();
     display.flush().unwrap();
 
     // Do some fun stuff with the oled
