@@ -1,16 +1,12 @@
-use core::{borrow::Borrow, cell::RefCell};
-
 use critical_section::Mutex;
 use embassy_time::{Duration, Instant, Ticker, Timer};
 use esp_println::println;
 use fugit::HertzU32;
 use heapless::spsc;
 use ringbuffer::{ConstGenericRingBuffer, RingBuffer};
+use rotary_encoder_embedded::angular_velocity::Velocity;
 
-use crate::{
-    BUTTON,
-    devices::{Global, pins, types},
-};
+use crate::devices::{Global, types};
 
 const EVENT_QUEUE_SIZE: usize = 8;
 
@@ -20,8 +16,8 @@ pub static EVENTS: Global<EventBuffer> = crate::devices::default();
 
 #[derive(Debug)]
 pub enum InputEvent {
-    Left,
-    Right,
+    Left(Velocity),
+    Right(Velocity),
     Click,
     DoubleClick,
     TripleClick,
@@ -29,30 +25,27 @@ pub enum InputEvent {
 
 #[embassy_executor::task]
 pub async fn process_input(
-    button: &'static Global<types::Button<'static>>,
-    rotary_encoder: &'static Global<types::RotaryEncoder<'static>>,
+    mut button: types::Button<'static>,
+    mut rotary_encoder: types::RotaryEncoder<'static>,
     events: &'static Global<EventBuffer>,
     polling_rate: HertzU32,
 ) {
     loop {
         critical_section::with(|cs| {
-            let mut rotary_encoder = rotary_encoder.borrow(cs).borrow_mut();
-            let mut button = button.borrow(cs).borrow_mut();
+            button.tick();
+            rotary_encoder.decay_velocity();
+            let direction = rotary_encoder.update(Instant::now().as_millis());
             let mut input_events = events.borrow(cs).borrow_mut();
-            if let (Some(button), Some(input_events), Some(rotary_encoder)) = (
-                button.as_mut(),
-                input_events.as_mut(),
-                rotary_encoder.as_mut(),
-            ) {
-                button.tick();
-                let direction = rotary_encoder.update(Instant::now().as_millis());
+            if let Some(input_events) = input_events.as_mut() {
                 match direction {
                     rotary_encoder_embedded::Direction::None => (),
                     rotary_encoder_embedded::Direction::Clockwise => {
-                        input_events.push(InputEvent::Left)
+                        println!("{}", rotary_encoder.velocity());
+                        input_events.push(InputEvent::Left(rotary_encoder.velocity()))
                     }
                     rotary_encoder_embedded::Direction::Anticlockwise => {
-                        input_events.push(InputEvent::Right)
+                        println!("{}", rotary_encoder.velocity());
+                        input_events.push(InputEvent::Right(rotary_encoder.velocity()))
                     }
                 }
                 if button.is_clicked() {

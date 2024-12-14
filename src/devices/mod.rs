@@ -4,10 +4,7 @@ use core::cell::RefCell;
 
 use critical_section::Mutex;
 use esp_hal::{
-    Blocking,
-    gpio::{GpioPin, Output},
-    peripherals::{SPI2, TIMG1},
-    spi::master::Spi,
+    peripherals::TIMG1,
     timer::timg::{Timer, Timer0},
 };
 
@@ -21,7 +18,3 @@ pub(crate) const fn default<T>() -> Global<T> {
 }
 
 pub(crate) type Global<T> = Mutex<RefCell<Option<T>>>;
-
-pub(crate) static ROTARY_ENCODER: Global<types::RotaryEncoder> = default();
-
-pub(crate) static BUTTON: Global<types::Button> = default();

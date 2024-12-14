@@ -20,7 +20,9 @@ heapless = { version = "0.8.0", features = ["portable-atomic"] }
 rotary-encoder-embedded = "0.3.1"
 ssd1331 = "0.3.0"
 async-button = { git = "https://github.com/avsaase/async-button" }
+defmt = "0.3.10"
 itoa = "1.0.14"
+libm = "0.2.11"
 
 [dependencies.ringbuffer]
 version = "0.15.0"

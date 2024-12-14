@@ -9,7 +9,9 @@ use embedded_graphics::{
     pixelcolor::Rgb565,
     prelude::*,
 };
+use libm::powf;
 use ringbuffer::RingBuffer;
+use rotary_encoder_embedded::angular_velocity::Velocity;
 
 use crate::{
     devices::Global,
@@ -18,10 +20,25 @@ use crate::{
 
 pub struct Ui<D: DrawTarget, M> {
     pub target: D,
-    pub model: M,
     /// Current index of component within a view
     pub index: usize,
     pub events: &'static Global<EventBuffer>,
+    pub model: M,
+}
+
+impl<D, M> Ui<D, M>
+where
+    D: DrawTarget,
+    M: Default,
+{
+    pub fn new(target: D, events: &'static Global<EventBuffer>) -> Self {
+        Self {
+            target,
+            index: 0,
+            events,
+            model: M::default(),
+        }
+    }
 }
 
 pub struct App<D: DrawTarget, M, const VIEWS: usize> {
@@ -31,13 +48,32 @@ pub struct App<D: DrawTarget, M, const VIEWS: usize> {
     pub views: [View<D, M>; VIEWS],
     pub flush: fn(&mut D),
     pub clear_color: D::Color,
-    pub events: &'static Global<EventBuffer>,
+    // pub events: &'static Global<EventBuffer>,
 }
 
 impl<D, M, const VIEWS: usize> App<D, M, VIEWS>
 where
     D: DrawTarget,
+    M: Default,
 {
+    pub fn new(
+        target: D,
+        events: &'static Global<EventBuffer>,
+        flush: fn(&mut D),
+        clear_color: D::Color,
+        refresh_rate: fugit::HertzU32,
+        views: [View<D, M>; VIEWS],
+    ) -> Self {
+        Self {
+            ui: Ui::new(target, events),
+            refresh_rate,
+            view_index: 0,
+            views,
+            flush,
+            clear_color,
+        }
+    }
+
     /// Start running the display and update periodically
     pub async fn run(&mut self) {
         let mut ticker = Ticker::every(Duration::from_micros(
@@ -72,7 +108,6 @@ pub struct View<D: DrawTarget, M> {
     /// Current index of the cursor for UI items within
     cursor: usize,
     pub ui: fn(&mut Ui<D, M>, &Self),
-    pub update: fn(&mut Self, event: input::InputEvent, model: &mut M),
 }
 
 impl<D, M> View<D, M>
@@ -80,29 +115,31 @@ where
     D: DrawTarget,
 {
     pub fn new(ui: fn(&mut Ui<D, M>, &Self)) -> Self {
-        Self {
-            cursor: 0,
-            ui,
-            update: |_, _, _| (),
-        }
+        Self { cursor: 0, ui }
     }
     pub fn show(&self, ui: &mut Ui<D, M>) {
         (self.ui)(ui, self)
-    }
-    pub fn update(&mut self, event: input::InputEvent, model: &mut M) {
-        (self.update)(self, event, model);
     }
 }
 
 pub trait Component {
     type Color = Rgb565;
     type Properties = ();
-    fn on_left(&mut self);
-    fn on_right(&mut self);
-    fn render<D, M>(&self, ui: &mut Ui<D, M>, active: bool) -> Result<(), D::Error>
+    type Model = ();
+    fn on_left<D>(&mut self, ui: &mut Ui<D, Self::Model>, velocity: Velocity)
     where
         D: DrawTarget<Color = Self::Color>;
-    fn show<D, M>(&mut self, ui: &mut Ui<D, M>, view: &View<D, M>) -> Result<(), D::Error>
+    fn on_right<D>(&mut self, ui: &mut Ui<D, Self::Model>, velocity: Velocity)
+    where
+        D: DrawTarget<Color = Self::Color>;
+    fn render<D>(&self, ui: &mut Ui<D, Self::Model>, active: bool) -> Result<(), D::Error>
+    where
+        D: DrawTarget<Color = Self::Color>;
+    fn show<D>(
+        &mut self,
+        ui: &mut Ui<D, Self::Model>,
+        view: &View<D, Self::Model>,
+    ) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = Self::Color>,
     {
@@ -115,8 +152,8 @@ pub trait Component {
         critical_section::with(|cs| {
             for event in ui.events.borrow(cs).borrow_mut().as_mut().unwrap().drain() {
                 match event {
-                    input::InputEvent::Left => self.on_left(),
-                    input::InputEvent::Right => self.on_right(),
+                    input::InputEvent::Left(velocity) => self.on_left(ui, velocity),
+                    input::InputEvent::Right(velocity) => self.on_right(ui, velocity),
                     // input::InputEvent::Click => self.on_click(),
                     _ => (),
                 }
@@ -135,36 +172,30 @@ pub trait Component {
     // fn on_click(model: &mut M) {}
 }
 
-pub struct Speed {
-    pub speed: usize,
-}
+pub struct Speed;
 
 impl Component for Speed {
-    fn on_left(&mut self) {
-        self.speed = self.speed.saturating_sub(1);
-    }
-    fn on_right(&mut self) {
-        self.speed = self.speed.saturating_add(1);
-    }
-
-    fn render<D, M>(&self, ui: &mut Ui<D, M>, active: bool) -> Result<(), D::Error>
+    type Model = usize;
+    fn render<D>(&self, ui: &mut Ui<D, Self::Model>, active: bool) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = Self::Color>,
     {
+        let mut buffer = itoa::Buffer::new();
+        let speed = buffer.format(ui.model);
         embedded_graphics::text::Text::new(
-            str::from_utf8(&[self.speed as u8]).unwrap(),
+            speed,
             ui.target.bounding_box().center(),
             MonoTextStyleBuilder::new()
-                .font(&embedded_graphics::mono_font::ascii::FONT_6X9)
+                .font(&embedded_graphics::mono_font::ascii::FONT_10X20)
                 .text_color(Rgb565::WHITE)
                 .build(),
         )
         .draw(&mut ui.target)?;
         // Generate graphics
         embedded_graphics::primitives::Triangle::new(
-            Point::new(8 + self.speed as i32, 16 + 16),
-            Point::new(8 + self.speed as i32 + 16, 16 + 16),
-            Point::new(8 + self.speed as i32 + 8, 16),
+            Point::new(8 + ui.model as i32, 16 + 16),
+            Point::new(8 + ui.model as i32 + 16, 16 + 16),
+            Point::new(8 + ui.model as i32 + 8, 16),
         )
         .into_styled(embedded_graphics::primitives::PrimitiveStyle::with_stroke(
             Self::Color::YELLOW,
@@ -174,26 +205,24 @@ impl Component for Speed {
 
         Ok(())
     }
+
+    type Color = Rgb565;
+
+    fn on_left<D>(&mut self, ui: &mut Ui<D, Self::Model>, velocity: Velocity)
+    where
+        D: DrawTarget<Color = Self::Color>,
+    {
+        ui.model = ui
+            .model
+            .saturating_sub(powf(1.2f32, velocity * 10f32) as usize);
+    }
+
+    fn on_right<D>(&mut self, ui: &mut Ui<D, Self::Model>, velocity: Velocity)
+    where
+        D: DrawTarget<Color = Self::Color>,
+    {
+        ui.model = ui
+            .model
+            .saturating_add(powf(1.2f32, velocity * 10f32) as usize);
+    }
 }
-
-// pub enum Page {
-//     AdjustSpeed(AdjustSpeed),
-// }
-
-// pub struct AdjustSpeed {}
-
-// impl Component for AdjustSpeed {
-//     type Message = Option<packets::Direction>;
-
-//     fn on_left() -> Self::Message {
-//         todo!()
-//     }
-
-//     fn on_right() -> Self::Message {
-//         todo!()
-//     }
-
-//     fn on_press() -> Self::Message {
-//         todo!()
-//     }
-// }

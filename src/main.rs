@@ -9,12 +9,8 @@ pub mod tasks;
 pub mod ui;
 
 use button_driver::{Button, ButtonConfig};
-use dcc::Operations;
-use dcc_rs::{
-    DccInterruptHandler,
-    packets::{Direction, Instruction, Reset, SerializeBuffer, SpeedAndDirection},
-};
-use devices::{BUTTON, ROTARY_ENCODER, dcc::*};
+use dcc_rs::DccInterruptHandler;
+use devices::dcc::*;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Instant, Timer};
 use embedded_graphics::{pixelcolor::Rgb565, prelude::*};
@@ -36,7 +32,7 @@ use ringbuffer::{ConstGenericRingBuffer, RingBuffer};
 use ssd1331::{DisplayRotation, Ssd1331};
 
 use devices::pins;
-use tasks::input::{self, EventBuffer, InputEvent};
+use tasks::input::{self, EventBuffer};
 
 #[esp_hal_embassy::main]
 async fn main(spawner: Spawner) {
@@ -141,7 +137,6 @@ async fn main(spawner: Spawner) {
     );
     let rotary_encoder =
         rotary_encoder_embedded::RotaryEncoder::new(dt, clk).into_angular_velocity_mode();
-    critical_section::with(|cs| ROTARY_ENCODER.replace(cs, Some(rotary_encoder)));
 
     // Create button
 
@@ -151,7 +146,6 @@ async fn main(spawner: Spawner) {
         ..Default::default()
     };
     let button: devices::types::Button = Button::<_, Instant, Duration>::new(sw, button_config);
-    critical_section::with(|cs| BUTTON.replace(cs, Some(button)));
 
     let event_queue = EventBuffer::new();
 
@@ -164,13 +158,13 @@ async fn main(spawner: Spawner) {
 
     spawner
         .spawn(tasks::input::process_input(
-            &BUTTON,
-            &ROTARY_ENCODER,
+            button,
+            rotary_encoder,
             &input::EVENTS,
-            120u32.Hz(),
+            900.Hz(),
         ))
         .unwrap();
-    spawner.must_spawn(tasks::input::input_debug_info(&input::EVENTS, 10.Hz()));
+    spawner.must_spawn(tasks::input::input_debug_info(&input::EVENTS, 1.Hz()));
     spawner.must_spawn(tasks::display::update_display(
         display,
         &input::EVENTS,

@@ -1,6 +1,3 @@
-use core::borrow::Borrow;
-
-use embassy_time::{Duration, Ticker};
 use embedded_graphics::{pixelcolor::Rgb565, prelude::*};
 use fugit::HertzU32;
 
@@ -18,24 +15,18 @@ pub async fn update_display(
     refresh_rate: HertzU32,
 ) {
     // Delay to achieve the desired refresh rate
-    let mut app = crate::ui::App {
-        ui: crate::ui::Ui {
-            target: display,
-            model: 0,
-            index: 0,
-            events,
-        },
-        refresh_rate,
-        view_index: 0,
-        views: [View::new(|ui, view| {
-            crate::ui::Speed { speed: ui.model }.show(ui, view).unwrap();
-        })],
-        clear_color: Rgb565::BLACK,
-        flush: |target| {
+    let mut app = crate::ui::App::new(
+        display,
+        events,
+        |target| {
             target.flush().ok();
         },
-        events,
-    };
+        Rgb565::BLACK,
+        refresh_rate,
+        [View::new(|ui, view| {
+            crate::ui::Speed.show(ui, view).unwrap();
+        })],
+    );
 
     app.run().await;
 }
