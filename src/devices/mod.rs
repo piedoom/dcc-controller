@@ -16,13 +16,12 @@ pub mod pins;
 pub mod types;
 
 /// Default initialization for resources. After initialized at the start of the program, all should be assumed to have a `Some` value
-const fn default<T>() -> Global<T> {
+pub(crate) const fn default<T>() -> Global<T> {
     Mutex::new(RefCell::new(Option::<T>::None))
 }
 
 pub(crate) type Global<T> = Mutex<RefCell<Option<T>>>;
 
-/// SPI display device
-pub(crate) static DISPLAY: Global<
-    ssd1331::Ssd1331<Spi<'_, Blocking, SPI2>, Output<'_, GpioPin<7>>>,
-> = default();
+pub(crate) static ROTARY_ENCODER: Global<types::RotaryEncoder> = default();
+
+pub(crate) static BUTTON: Global<types::Button> = default();

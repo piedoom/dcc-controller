@@ -9,6 +9,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c95c10ba0b00a02636238b814946408b1322d5ac4760326e6fb8ec956d85775"
 
 [[package]]
+name = "async-button"
+version = "0.1.0"
+source = "git+https://github.com/avsaase/async-button#2d80c944da81bf36874751e86fbb5c6cc3e082dc"
+dependencies = [
+ "cfg-if",
+ "embassy-time",
+ "embedded-hal 1.0.0",
+ "embedded-hal-async",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -144,17 +155,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "dcc-rs"
-version = "0.3.0"
-dependencies = [
- "bitvec",
- "embedded-hal 0.2.7",
-]
-
-[[package]]
-name = "dcc-tx"
+name = "dcc-controller"
 version = "0.1.0"
 dependencies = [
+ "async-button",
  "button-driver",
  "critical-section",
  "dcc-rs",
@@ -171,8 +175,18 @@ dependencies = [
  "esp-hal-embassy",
  "esp-println",
  "fugit",
+ "heapless",
+ "ringbuffer",
  "rotary-encoder-embedded",
  "ssd1331",
+]
+
+[[package]]
+name = "dcc-rs"
+version = "0.3.0"
+dependencies = [
+ "bitvec",
+ "embedded-hal 0.2.7",
 ]
 
 [[package]]
@@ -697,6 +711,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0bfb9eb618601c89945a70e254898da93b13be0388091d42117462b265bb3fad"
 dependencies = [
  "hash32",
+ "portable-atomic",
  "stable_deref_trait",
 ]
 
@@ -878,6 +893,12 @@ name = "rand_core"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
+
+[[package]]
+name = "ringbuffer"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3df6368f71f205ff9c33c076d170dd56ebf68e8161c733c0caa07a7a5509ed53"
 
 [[package]]
 name = "riscv"

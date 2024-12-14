@@ -1,5 +1,5 @@
 [package]
-name = "dcc-tx"
+name = "dcc-controller"
 version = "0.1.0"
 edition = "2024"
 
@@ -16,8 +16,14 @@ embedded-graphics = "0.7.1"
 embedded-hal = "1.0.0"
 embedded-hal-bus = "0.1.0"
 fugit = "0.3.7"
+heapless = { version = "0.8.0", features = ["portable-atomic"] }
 rotary-encoder-embedded = "0.3.1"
 ssd1331 = "0.3.0"
+async-button = { git = "https://github.com/avsaase/async-button" }
+
+[dependencies.ringbuffer]
+version = "0.15.0"
+default-features = false
 
 [dependencies.button-driver]
 version = "0.2.2"

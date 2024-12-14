@@ -6,10 +6,6 @@ use esp_hal::{analog::adc::Adc, peripherals::ADC1};
 /// One ADC device powers both modes. See [`pins`] for more specific definitions
 pub(crate) static ADC: Global<Adc<ADC1>> = default();
 
-pub(crate) static ROTARY_ENCODER: Global<types::RotaryEncoder> = default();
-
-pub(crate) static BUTTON: Global<types::Button> = default();
-
 /// Operations mode devices and resources
 pub(crate) mod operations {
 

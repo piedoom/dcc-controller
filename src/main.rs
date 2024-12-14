@@ -5,14 +5,16 @@
 
 mod dcc;
 mod devices;
+pub mod tasks;
+pub mod ui;
 
 use button_driver::{Button, ButtonConfig};
 use dcc::Operations;
 use dcc_rs::{
     DccInterruptHandler,
-    packets::{Direction, SerializeBuffer, SpeedAndDirection},
+    packets::{Direction, Instruction, Reset, SerializeBuffer, SpeedAndDirection},
 };
-use devices::dcc::*;
+use devices::{BUTTON, ROTARY_ENCODER, dcc::*};
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Instant, Timer};
 use embedded_graphics::{pixelcolor::Rgb565, prelude::*};
@@ -30,9 +32,11 @@ use esp_hal::{
 use esp_println::println;
 use fugit::RateExtU32;
 use hal::prelude::*;
+use ringbuffer::{ConstGenericRingBuffer, RingBuffer};
 use ssd1331::{DisplayRotation, Ssd1331};
 
 use devices::pins;
+use tasks::input::{self, EventBuffer, InputEvent};
 
 #[esp_hal_embassy::main]
 async fn main(spawner: Spawner) {
@@ -74,7 +78,9 @@ async fn main(spawner: Spawner) {
 
             let timg1 = TimerGroup::new(p.TIMG1);
             let timer0 = timg1.timer0;
-            timer0.set_interrupt_handler(dcc_operations_step);
+
+            // Bitbang interrupt handler for DCC transmission
+            timer0.set_interrupt_handler(tasks::dcc_operations_step);
             interrupt::enable(Interrupt::TG0_T0_LEVEL, Priority::Priority1).unwrap();
             timer0.load_value(500u64.millis()).unwrap();
             timer0.start();
@@ -116,30 +122,16 @@ async fn main(spawner: Spawner) {
     });
 
     // Create OLED display via SPI
+    // We don't put this in global storage since we'll give exclusive access to the rendering task
     let mut display = init_display();
+
+    // Reset the display and set configuration
     let mut rst: pins::spi::Res = Output::new_typed(p.GPIO9, Level::Low);
+    display.flush().unwrap();
     display.reset(&mut rst, &mut Delay::new()).unwrap();
     display.set_rotation(DisplayRotation::Rotate180).unwrap();
     display.init().unwrap();
     display.flush().unwrap();
-
-    // Do some fun stuff with the oled
-    embedded_graphics::primitives::Triangle::new(
-        Point::new(8, 16 + 16),
-        Point::new(8 + 16, 16 + 16),
-        Point::new(8 + 8, 16),
-    )
-    .into_styled(embedded_graphics::primitives::PrimitiveStyle::with_stroke(
-        Rgb565::RED,
-        2,
-    ))
-    .draw(&mut display)
-    .unwrap();
-    display.flush().unwrap();
-
-    critical_section::with(|cs| {
-        devices::DISPLAY.replace(cs, Some(display));
-    });
 
     // Create the rotary encoder device
 
@@ -152,6 +144,7 @@ async fn main(spawner: Spawner) {
     critical_section::with(|cs| ROTARY_ENCODER.replace(cs, Some(rotary_encoder)));
 
     // Create button
+
     let sw: pins::rotary_encoder::Switch = Input::new_typed(p.GPIO21, esp_hal::gpio::Pull::Down);
     let button_config: ButtonConfig<embassy_time::Duration> = button_driver::ButtonConfig {
         mode: button_driver::Mode::PullDown,
@@ -160,86 +153,27 @@ async fn main(spawner: Spawner) {
     let button: devices::types::Button = Button::<_, Instant, Duration>::new(sw, button_config);
     critical_section::with(|cs| BUTTON.replace(cs, Some(button)));
 
-    loop {
-        //info!("tx, addr = {}", addr);
-        // pop a new chunk of data into the buffer
-        let pkt = SpeedAndDirection::builder()
-            .address(10)
-            .unwrap()
-            .speed(14)
-            .unwrap()
-            .direction(Direction::Forward)
-            .build();
-        let mut buffer = SerializeBuffer::default();
-        let len = pkt.serialize(&mut buffer).unwrap();
-        // println!("{:?}", buffer);
+    let event_queue = EventBuffer::new();
 
-        critical_section::with(|cs| {
-            operations::DRIVER
-                .borrow_ref_mut(cs)
-                .as_mut()
-                .unwrap()
-                .write(buffer.get(0..len).unwrap())
-                .unwrap();
-        });
+    critical_section::with(|cs| input::EVENTS.replace(cs, Some(event_queue)));
 
-        Timer::after_millis(15).await; // Retransmit after minimum amount of time in spec
-    }
-}
+    // Spawn tasks
 
-// Transmit DCC signal
-#[handler]
-fn dcc_operations_step() {
-    let tx_buffer = critical_section::with(|cs| operations::TX_BUFFER.take(cs));
-    let mut dcc_handler = critical_section::with(|cs| operations::DRIVER.take(cs).unwrap());
+    // DCC transmission related tasks
+    spawner.must_spawn(tasks::dcc_operations_transmit());
 
-    // Only write to the handler if we have new data in the buffer
-    if let Some((new_data, len)) = tx_buffer {
-        dcc_handler.write(&new_data[..len]).unwrap();
-    }
-
-    // Set the delay until the next level change
-    let new_delay = dcc_handler.tick().unwrap();
-
-    let timer = critical_section::with(|cs| operations::TIMER.take(cs).unwrap());
-
-    timer.load_value((new_delay as u64).micros()).unwrap();
-    timer.start();
-
-    timer.clear_interrupt();
-
-    // Replace devices
-    critical_section::with(|cs| operations::DRIVER.replace(cs, Some(dcc_handler)));
-    critical_section::with(|cs| operations::TIMER.replace(cs, Some(timer)));
-}
-
-#[embassy_executor::task]
-async fn update_display() {
-    // // Take SPI device and create LCD
-    // let mut delay = Delay::new();
-    // let mut i2c = critical_section::with(|cs| devices::I2C.take(cs).unwrap());
-    // let mut lcd = lcd_lcm1602_i2c::LCD16x4::new(&mut i2c, &mut delay)
-    //     .with_address(LCD_ADDRESS)
-    //     .with_cursor_on(false) // no visible cursor
-    //     .init()
-    //     .unwrap();
-
-    // let spi_device = SpiDevice::new(bus, cs);
-
-    // loop {
-    //     lcd.set_cursor(0, 0).unwrap();
-    //     screen_buffer[3] = 'w' as u8;
-    //     lcd.write_str("a");
-    //     // lcd.write_str(str::from_utf8(&screen_buffer).unwrap())
-    //     //     .unwrap();
-
-    //     // critical_section::with(|cs| {
-    //     //     // Replace screen buffer
-    //     //     globals::SCREEN_BUFFER.replace(cs, Some(screen_buffer));
-    //     //     // Replace I2C device
-    //     //     globals::I2C.replace(cs, Some(i2c));
-    //     // });
-
-    //     Timer::after_millis(30).await;
-    // }
+    spawner
+        .spawn(tasks::input::process_input(
+            &BUTTON,
+            &ROTARY_ENCODER,
+            &input::EVENTS,
+            120u32.Hz(),
+        ))
+        .unwrap();
+    spawner.must_spawn(tasks::input::input_debug_info(&input::EVENTS, 10.Hz()));
+    spawner.must_spawn(tasks::display::update_display(
+        display,
+        &input::EVENTS,
+        60.Hz(),
+    ));
 }
