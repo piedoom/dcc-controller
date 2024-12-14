@@ -25,7 +25,6 @@ pub enum InputEvent {
     Click,
     DoubleClick,
     TripleClick,
-    Drag,
 }
 
 #[embassy_executor::task]

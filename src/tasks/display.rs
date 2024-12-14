@@ -19,18 +19,22 @@ pub async fn update_display(
 ) {
     // Delay to achieve the desired refresh rate
     let mut app = crate::ui::App {
-        target: display,
+        ui: crate::ui::Ui {
+            target: display,
+            model: 0,
+            index: 0,
+            events,
+        },
         refresh_rate,
         view_index: 0,
-        views: [View::new(|ui, model| {
-            crate::ui::Speed { speed: *model }.show(ui).ok();
+        views: [View::new(|ui, view| {
+            crate::ui::Speed { speed: ui.model }.show(ui, view).unwrap();
         })],
         clear_color: Rgb565::BLACK,
         flush: |target| {
             target.flush().ok();
         },
         events,
-        model: 0,
     };
 
     app.run().await;
