@@ -1,0 +1,176 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "20362ee4-1756-4bc7-b4f7-b1a1499a7e37")
+	(paper "A4")
+	(lib_symbols)
+	(hierarchical_label "VCC_5V"
+		(shape input)
+		(at 80.01 96.52 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "0645bd37-1d34-4db3-acc5-f4bf39b54c0e")
+	)
+	(hierarchical_label "CUR_B"
+		(shape input)
+		(at 80.01 86.36 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "344289f0-1380-4d1a-bd5f-9e1a5cd64ecb")
+	)
+	(hierarchical_label "OUT_A1"
+		(shape input)
+		(at 80.01 100.33 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "38f734cd-bb6b-4d12-b4c5-35c090c685da")
+	)
+	(hierarchical_label "IN_B2"
+		(shape input)
+		(at 80.01 81.28 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "48c267e8-affb-4dc3-b965-3e894fafd846")
+	)
+	(hierarchical_label "VCC_12V"
+		(shape input)
+		(at 80.01 93.98 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "4df7a88c-de53-4552-9d5a-a26c5565a949")
+	)
+	(hierarchical_label "IN_A2"
+		(shape input)
+		(at 80.01 76.2 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "63ecbcfd-c042-4764-8621-e17ada9a87ad")
+	)
+	(hierarchical_label "OUT_A2"
+		(shape input)
+		(at 80.01 102.87 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "715eac9c-9fa2-4420-8bc0-d78403bba003")
+	)
+	(hierarchical_label "IN_B1"
+		(shape input)
+		(at 80.01 78.74 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "896a79ae-efaf-4422-baed-907755cf6ef0")
+	)
+	(hierarchical_label "EN_B"
+		(shape input)
+		(at 80.01 71.12 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "8fe38ef3-12d0-4262-a4d0-47cf71bc874b")
+	)
+	(hierarchical_label "OUT_B2"
+		(shape input)
+		(at 80.01 107.95 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a6ca9121-3185-47fd-ab98-4f0d090eef95")
+	)
+	(hierarchical_label "EN_A"
+		(shape input)
+		(at 80.01 68.58 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ab73d140-8b2a-434e-8af2-03a7754a4b92")
+	)
+	(hierarchical_label "OUT_B1"
+		(shape input)
+		(at 80.01 105.41 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c1c85919-e405-47d1-bbb6-d7e0db22b61d")
+	)
+	(hierarchical_label "IN_A1"
+		(shape input)
+		(at 80.01 73.66 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e07913e5-94ae-4f18-85de-2ee63b7d34b0")
+	)
+	(hierarchical_label "CUR_A"
+		(shape input)
+		(at 80.01 83.82 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e42f02a2-ad89-4cd2-b86e-56564ce6d37a")
+	)
+)

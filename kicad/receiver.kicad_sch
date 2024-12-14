@@ -1,0 +1,325 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "72957791-e289-455b-aede-fde06d9f9b73")
+	(paper "A4")
+	(lib_symbols)
+	(polyline
+		(pts
+			(xy 82.55 76.2) (xy 111.76 76.2)
+		)
+		(stroke
+			(width 0.508)
+			(type default)
+			(color 216 107 238 1)
+		)
+		(uuid "6c0e825e-ab7f-4060-ba0b-63f569d7084d")
+	)
+	(wire
+		(pts
+			(xy 111.76 78.74) (xy 128.27 78.74)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+			(color 216 107 238 1)
+		)
+		(uuid "70364734-583b-494d-ae3e-29b0ca5f8a85")
+	)
+	(wire
+		(pts
+			(xy 111.76 76.2) (xy 128.27 76.2)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+			(color 216 107 238 1)
+		)
+		(uuid "a4b6361d-9411-49bd-83c9-e1baef69809b")
+	)
+	(polyline
+		(pts
+			(xy 82.55 78.74) (xy 111.76 78.74)
+		)
+		(stroke
+			(width 0.508)
+			(type default)
+			(color 216 107 238 1)
+		)
+		(uuid "f2d79d4f-e356-41b7-a862-3ee8603fda35")
+	)
+	(rectangle
+		(start 96.52 74.93)
+		(end 97.79 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 13c56ea9-d440-4553-b70e-c48a0c0291b2)
+	)
+	(rectangle
+		(start 106.68 74.93)
+		(end 107.95 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 2fd17530-e55b-40a1-844a-a8e1c15cea9c)
+	)
+	(rectangle
+		(start 88.9 74.93)
+		(end 90.17 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 37d85934-20b8-4c0c-abfe-76aa49465810)
+	)
+	(rectangle
+		(start 99.06 74.93)
+		(end 100.33 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 3c585625-6d80-4b1f-bf2c-ebb03e6d6ecb)
+	)
+	(rectangle
+		(start 86.36 74.93)
+		(end 87.63 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 3e6e8264-da21-4713-8479-345d446d05f2)
+	)
+	(rectangle
+		(start 104.14 74.93)
+		(end 105.41 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 4d8189c9-3dc0-4b29-a050-7929bd329428)
+	)
+	(rectangle
+		(start 93.98 74.93)
+		(end 95.25 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 5079e56d-cdcd-4864-bd32-fe8093025366)
+	)
+	(rectangle
+		(start 91.44 74.93)
+		(end 92.71 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 822f87d1-2a7f-439f-b801-ad684df7d7ef)
+	)
+	(rectangle
+		(start 83.82 74.93)
+		(end 85.09 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 8558933e-73e7-42a6-9fa7-558241c9777e)
+	)
+	(rectangle
+		(start 109.22 74.93)
+		(end 110.49 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid 9aaabdaf-01e0-4de7-82cf-23cfa7d0e819)
+	)
+	(rectangle
+		(start 101.6 74.93)
+		(end 102.87 80.01)
+		(stroke
+			(width -0.0001)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 61 61 61 1)
+		)
+		(uuid bee2b128-e7ff-4f73-ad5c-973e7961f939)
+	)
+	(text_box "Track"
+		(exclude_from_sim no)
+		(at 82.55 71.12 0)
+		(size 15.24 2.54)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "3d3055d6-983e-4b36-9aa5-4aa6df0a3c85")
+	)
+	(hierarchical_label "RAIL_1"
+		(shape input)
+		(at 111.76 76.2 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "58e942d3-466d-4fb8-9cc1-149492d4d545")
+	)
+	(hierarchical_label "RAIL_2"
+		(shape input)
+		(at 111.76 78.74 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f1999d7d-f2b2-4402-bdd4-0c24008c345d")
+	)
+	(sheet
+		(at 138.43 55.88)
+		(size 33.02 15.24)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "d2fa69c2-c3e0-43db-84db-bb1b3a6e2002")
+		(property "Sheetname" "Logic converter"
+			(at 138.43 55.1684 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "logic_converter.kicad_sch"
+			(at 138.43 71.7046 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "dcc"
+				(path "/11b6b3e0-6260-4ffa-b9c7-47f3b03473c9/e71ecf15-c300-4c9d-862f-92665ebf3933"
+					(page "11")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 138.43 88.9)
+		(size 33.02 17.78)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "fe0267e8-6263-40e8-a151-ccbc1a5c7034")
+		(property "Sheetname" "Power regulation"
+			(at 138.43 88.1884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power.kicad_sch"
+			(at 138.43 107.2646 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Field2" ""
+			(at 138.43 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "dcc"
+				(path "/11b6b3e0-6260-4ffa-b9c7-47f3b03473c9/e71ecf15-c300-4c9d-862f-92665ebf3933"
+					(page "10")
+				)
+			)
+		)
+	)
+)

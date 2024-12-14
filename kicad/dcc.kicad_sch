@@ -1,0 +1,718 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "11b6b3e0-6260-4ffa-b9c7-47f3b03473c9")
+	(paper "User" 431.8 279.4)
+	(lib_symbols
+		(symbol "Switch:SW_Push_DPDT"
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "SW"
+				(at 0 10.16 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SW_Push_DPDT"
+				(at 0 -10.16 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Momentary Switch, dual pole double throw"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "switch dual-pole double-throw spdt ON-ON"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SW_Push_DPDT_0_0"
+				(circle
+					(center -2.032 -5.08)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -2.032 5.08)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.032 -7.62)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.032 2.54)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SW_Push_DPDT_0_1"
+				(polyline
+					(pts
+						(xy -1.524 -4.826) (xy 2.3368 -3.0988)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.524 5.334) (xy 2.3368 7.0612)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -2.286) (xy 0 -4.064)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -1.016) (xy 0 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 1.27) (xy 0 2.286)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 3.556) (xy 0 4.572)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 7.874) (xy 0 6.096)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.032 -2.54)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.032 7.62)
+					(radius 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SW_Push_DPDT_1_1"
+				(rectangle
+					(start -3.175 8.89)
+					(end 3.175 -8.89)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin passive line
+					(at 5.08 7.62 180)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 5.08 0)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 2.54 180)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -5.08 0)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -7.62 180)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 40.64 36.83) (xy 40.64 34.29)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "0d0c9117-1a59-423c-a631-6827378819f3")
+	)
+	(wire
+		(pts
+			(xy 40.64 36.83) (xy 44.45 36.83)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "13c276dc-68aa-449e-8130-1eb79124bdd1")
+	)
+	(wire
+		(pts
+			(xy 35.56 52.07) (xy 44.45 52.07)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "2898e345-08a0-4104-ac1b-ce608eabb383")
+	)
+	(wire
+		(pts
+			(xy 35.56 44.45) (xy 35.56 52.07)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "3036bb26-d5ac-43b8-a6b4-b936b8f4b958")
+	)
+	(wire
+		(pts
+			(xy 55.88 41.91) (xy 60.96 41.91)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "3215f3e6-cf79-4a66-809d-44b3a9d48ffd")
+	)
+	(wire
+		(pts
+			(xy 40.64 34.29) (xy 31.75 34.29)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "4f832554-a83d-477b-91bb-5e8b1f4c9f9a")
+	)
+	(wire
+		(pts
+			(xy 54.61 39.37) (xy 60.96 39.37)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "51237039-10a4-4104-b4aa-c703ed47c037")
+	)
+	(wire
+		(pts
+			(xy 31.75 41.91) (xy 44.45 41.91)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "515ee9e1-63d6-47e0-af19-1188f5544065")
+	)
+	(wire
+		(pts
+			(xy 38.1 46.99) (xy 44.45 46.99)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "64ed3cf5-9f5d-4d83-bfce-8f81c9d9c0ab")
+	)
+	(wire
+		(pts
+			(xy 31.75 36.83) (xy 38.1 36.83)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "74440f4a-f348-4f23-a012-169b269814a8")
+	)
+	(wire
+		(pts
+			(xy 54.61 49.53) (xy 55.88 49.53)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "9a06fc30-ca89-4f67-b7a8-6833d133042e")
+	)
+	(wire
+		(pts
+			(xy 55.88 49.53) (xy 55.88 41.91)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "ba1174fb-dcf8-4956-a62f-d0f78b9fdf5b")
+	)
+	(wire
+		(pts
+			(xy 31.75 44.45) (xy 35.56 44.45)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "d74bf570-dbca-4ff0-9445-aad6773bd24d")
+	)
+	(wire
+		(pts
+			(xy 38.1 36.83) (xy 38.1 46.99)
+		)
+		(stroke
+			(width 0.4064)
+			(type default)
+		)
+		(uuid "f48b97e7-c57f-4149-8d6d-4b00d2b668cf")
+	)
+	(text "Sources: \n- http://www.trainelectronics.com/DCC_Arduino/DCC_Booster/images/schematic.gif"
+		(exclude_from_sim no)
+		(at 19.558 18.288 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7122d008-f04b-4005-adf0-af97ba5693c3")
+	)
+	(symbol
+		(lib_id "Switch:SW_Push_DPDT")
+		(at 49.53 44.45 0)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1e7e8b7e-d640-422a-9b6a-c578443ee0d8")
+		(property "Reference" "SW2"
+			(at 49.53 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "Current track"
+			(at 49.53 33.274 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 49.53 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 49.53 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Momentary Switch, dual pole double throw"
+			(at 49.53 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "ff023e4e-577c-4cb6-b706-b6a2abdfd322")
+		)
+		(pin "1"
+			(uuid "4d98c5a4-a01a-46f6-a15c-24e8164f0024")
+		)
+		(pin "2"
+			(uuid "bc69253e-8380-44fc-9265-80610ca0136f")
+		)
+		(pin "6"
+			(uuid "5dd393e0-ab60-4b47-948b-ace62ddd7c0e")
+		)
+		(pin "3"
+			(uuid "806e90ad-4c1d-438e-985c-0b45622c2a08")
+		)
+		(pin "4"
+			(uuid "e224cbae-fa62-4642-9cbe-7328b79dc6cb")
+		)
+		(instances
+			(project ""
+				(path "/11b6b3e0-6260-4ffa-b9c7-47f3b03473c9"
+					(reference "SW2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(sheet
+		(at 19.05 31.75)
+		(size 12.7 15.24)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "32c2b422-965c-48a7-ae87-7d3f23e7b8fb")
+		(property "Sheetname" "Transmitter"
+			(at 19.05 31.0384 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "transmitter.kicad_sch"
+			(at 19.05 47.5746 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "RAIL_B2" output
+			(at 31.75 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "dc0e5a77-c6f1-4e20-83e2-2df0055b767e")
+		)
+		(pin "RAIL_B1" output
+			(at 31.75 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "dde0bcd4-b0cc-4023-bf1a-6af14447eb9f")
+		)
+		(pin "RAIL_A1" output
+			(at 31.75 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "eab5fb80-44c1-4b69-89ee-a2e3a5cedd44")
+		)
+		(pin "RAIL_A2" output
+			(at 31.75 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "39db50ac-4d66-45cf-831f-ade85612f6a2")
+		)
+		(instances
+			(project "dcc"
+				(path "/11b6b3e0-6260-4ffa-b9c7-47f3b03473c9"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 60.96 36.83)
+		(size 12.7 7.62)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "e71ecf15-c300-4c9d-862f-92665ebf3933")
+		(property "Sheetname" "Receiver"
+			(at 60.96 36.1184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "receiver.kicad_sch"
+			(at 60.96 45.0346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "RAIL_2" input
+			(at 60.96 41.91 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "ae80ed51-5a29-4814-a7e8-141765f533c4")
+		)
+		(pin "RAIL_1" input
+			(at 60.96 39.37 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "5a6447fb-1c2f-4082-9767-85041ec5ad72")
+		)
+		(instances
+			(project "dcc"
+				(path "/11b6b3e0-6260-4ffa-b9c7-47f3b03473c9"
+					(page "9")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)
