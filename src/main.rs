@@ -8,11 +8,11 @@ mod devices;
 pub mod tasks;
 pub mod ui;
 
-use button_driver::{Button, ButtonConfig};
+use button_driver::ButtonConfig;
 use dcc_rs::DccInterruptHandler;
 use devices::dcc::*;
 use embassy_executor::Spawner;
-use embassy_time::{Duration, Instant};
+
 use esp_backtrace as _;
 use esp_hal::{
     self as hal, Blocking,
@@ -143,7 +143,8 @@ async fn main(spawner: Spawner) {
         mode: button_driver::Mode::PullDown,
         ..Default::default()
     };
-    let button: devices::types::Button = Button::<_, Instant, Duration>::new(sw, button_config);
+
+    let button = button_driver::Button::new(sw, button_config);
 
     let event_queue = EventBuffer::new();
 
@@ -154,15 +155,17 @@ async fn main(spawner: Spawner) {
     // DCC transmission related tasks
     spawner.must_spawn(tasks::dcc_operations_transmit());
 
-    spawner
-        .spawn(tasks::input::process_input(
-            button,
-            rotary_encoder,
-            &input::EVENTS,
-            900.Hz(),
-        ))
-        .unwrap();
-    spawner.must_spawn(tasks::input::input_debug_info(&input::EVENTS, 1.Hz()));
+    spawner.must_spawn(tasks::input::process_rotary_input(
+        rotary_encoder,
+        &input::EVENTS,
+        900.Hz(),
+    ));
+    spawner.must_spawn(tasks::input::process_button_input(
+        button,
+        &input::EVENTS,
+        900.Hz(),
+    ));
+    // spawner.must_spawn(tasks::input::input_debug_info(&input::EVENTS, 1.Hz()));
     spawner.must_spawn(tasks::display::update_display(
         display,
         &input::EVENTS,

@@ -16,23 +16,67 @@ pub static EVENTS: Global<EventBuffer> = crate::devices::default();
 pub enum InputEvent {
     Left(Velocity),
     Right(Velocity),
-    // Click,
-    // DoubleClick,
+    Click,
+    DoubleClick,
+    Hold,
     // TripleClick,
 }
 
 #[embassy_executor::task]
-pub async fn process_input(
+
+pub async fn process_button_input(
     mut button: types::Button<'static>,
+    events: &'static Global<EventBuffer>,
+    polling_rate: HertzU32,
+) {
+    let mut ticker = Ticker::every(Duration::from_micros(
+        polling_rate
+            .into_duration::<1, { embassy_time::TICK_HZ as u32 }>()
+            .to_micros() as u64,
+    ));
+    loop {
+        button.tick();
+
+        critical_section::with(|cs| {
+            let mut input_events = events.borrow(cs).borrow_mut();
+            if let Some(input_events) = input_events.as_mut() {
+                if let Some(held) = button.held_time() {
+                    if held > embassy_time::Duration::from_secs(1) {
+                        input_events.push(InputEvent::Hold);
+                    }
+                }
+                // match button_state {
+                // async_button::ButtonEvent::ShortPress { count } => {
+                //     input_events.push(if count == 1 {
+                //         InputEvent::Click
+                //     } else {
+                //         InputEvent::DoubleClick
+                //     });
+                // }
+                // async_button::ButtonEvent::LongPress => {
+                //     input_events.push(InputEvent::Hold);
+                // }
+                // }
+            }
+        });
+        button.reset();
+        // Delay to achieve the desired polling rate
+        ticker.next().await;
+    }
+}
+
+#[embassy_executor::task]
+pub async fn process_rotary_input(
     mut rotary_encoder: types::RotaryEncoder<'static>,
     events: &'static Global<EventBuffer>,
     polling_rate: HertzU32,
 ) {
     loop {
+        // let button_event = button.update().await;
+        rotary_encoder.decay_velocity();
+        let direction = rotary_encoder.update(Instant::now().as_millis());
+
         critical_section::with(|cs| {
-            button.tick();
-            rotary_encoder.decay_velocity();
-            let direction = rotary_encoder.update(Instant::now().as_millis());
             let mut input_events = events.borrow(cs).borrow_mut();
             if let Some(input_events) = input_events.as_mut() {
                 match direction {
@@ -46,14 +90,6 @@ pub async fn process_input(
                         input_events.push(InputEvent::Right(rotary_encoder.velocity()))
                     }
                 }
-                // if button.is_clicked() {
-                //     println!("a");
-                //     input_events.push(InputEvent::Click);
-                // } else if button.is_double_clicked() {
-                //     input_events.push(InputEvent::DoubleClick);
-                // } else if button.is_triple_clicked() {
-                //     input_events.push(InputEvent::TripleClick);
-                // }
             }
         });
 

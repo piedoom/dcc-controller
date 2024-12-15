@@ -32,6 +32,8 @@ pub async fn update_display(
                 .show(ui, |model, event| match event {
                     InputEvent::Left(_velocity) => *model -= 1,
                     InputEvent::Right(_velocity) => *model += 1,
+                    InputEvent::Hold => *model = 0,
+                    _ => (),
                 })
                 .unwrap();
         });
