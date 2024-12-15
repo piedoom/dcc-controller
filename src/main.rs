@@ -12,11 +12,10 @@ use button_driver::{Button, ButtonConfig};
 use dcc_rs::DccInterruptHandler;
 use devices::dcc::*;
 use embassy_executor::Spawner;
-use embassy_time::{Duration, Instant, Timer};
-use embedded_graphics::{pixelcolor::Rgb565, prelude::*};
+use embassy_time::{Duration, Instant};
 use esp_backtrace as _;
 use esp_hal::{
-    self as hal, Async, Blocking,
+    self as hal, Blocking,
     analog::adc::{Adc, AdcConfig},
     delay::Delay,
     gpio::{Input, Level, Output},
@@ -25,10 +24,9 @@ use esp_hal::{
     spi::master::Spi,
     timer::timg::TimerGroup,
 };
-use esp_println::println;
 use fugit::RateExtU32;
 use hal::prelude::*;
-use ringbuffer::{ConstGenericRingBuffer, RingBuffer};
+
 use ssd1331::{DisplayRotation, Ssd1331};
 
 use devices::pins;

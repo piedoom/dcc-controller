@@ -6,7 +6,7 @@ use crate::{
     ui::{Component, View},
 };
 
-use super::input;
+use super::input::{self, InputEvent};
 
 #[embassy_executor::task]
 pub async fn update_display(
@@ -15,18 +15,27 @@ pub async fn update_display(
     refresh_rate: HertzU32,
 ) {
     // Delay to achieve the desired refresh rate
-    let mut app = crate::ui::App::new(
+    let app = crate::ui::App::new(
         display,
         events,
         |target| {
             target.flush().ok();
         },
         Rgb565::BLACK,
+        0usize,
         refresh_rate,
-        [View::new(|ui, view| {
-            crate::ui::Speed.show(ui, view).unwrap();
-        })],
     );
 
-    app.run().await;
+    app.show(|ui| {
+        View.show(ui, |ui| {
+            crate::ui::Speed { speed: *ui.model }
+                .show(ui, |model, event| match event {
+                    InputEvent::Left(_velocity) => *model -= 1,
+                    InputEvent::Right(_velocity) => *model += 1,
+                })
+                .unwrap();
+        });
+    })
+    .run()
+    .await;
 }

@@ -1,8 +1,6 @@
-use critical_section::Mutex;
 use embassy_time::{Duration, Instant, Ticker, Timer};
 use esp_println::println;
 use fugit::HertzU32;
-use heapless::spsc;
 use ringbuffer::{ConstGenericRingBuffer, RingBuffer};
 use rotary_encoder_embedded::angular_velocity::Velocity;
 
@@ -18,9 +16,9 @@ pub static EVENTS: Global<EventBuffer> = crate::devices::default();
 pub enum InputEvent {
     Left(Velocity),
     Right(Velocity),
-    Click,
-    DoubleClick,
-    TripleClick,
+    // Click,
+    // DoubleClick,
+    // TripleClick,
 }
 
 #[embassy_executor::task]
@@ -48,14 +46,14 @@ pub async fn process_input(
                         input_events.push(InputEvent::Right(rotary_encoder.velocity()))
                     }
                 }
-                if button.is_clicked() {
-                    println!("a");
-                    input_events.push(InputEvent::Click);
-                } else if button.is_double_clicked() {
-                    input_events.push(InputEvent::DoubleClick);
-                } else if button.is_triple_clicked() {
-                    input_events.push(InputEvent::TripleClick);
-                }
+                // if button.is_clicked() {
+                //     println!("a");
+                //     input_events.push(InputEvent::Click);
+                // } else if button.is_double_clicked() {
+                //     input_events.push(InputEvent::DoubleClick);
+                // } else if button.is_triple_clicked() {
+                //     input_events.push(InputEvent::TripleClick);
+                // }
             }
         });
 
