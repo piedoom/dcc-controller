@@ -1,12 +1,22 @@
+use arrayvec::ArrayVec;
 use embedded_graphics::{pixelcolor::Rgb565, prelude::*};
 use fugit::HertzU32;
 
 use crate::{
     devices::{Global, types},
-    ui::{Component, View},
+    ui::{
+        Component, View,
+        components::{self, Decoder},
+    },
 };
 
 use super::input::{self, InputEvent};
+
+#[derive(Default)]
+pub struct Model {
+    decoders: ArrayVec<Decoder, 127>,
+    speed: u8,
+}
 
 #[embassy_executor::task]
 pub async fn update_display(
@@ -22,20 +32,27 @@ pub async fn update_display(
             target.flush().ok();
         },
         Rgb565::BLACK,
-        0usize,
+        Model::default(),
         refresh_rate,
     );
 
     app.show(|ui| {
         View.show(ui, |ui| {
-            crate::ui::Speed { speed: *ui.model }
-                .show(ui, |model, event| match event {
-                    InputEvent::Left(_velocity) => *model -= 1,
-                    InputEvent::Right(_velocity) => *model += 1,
-                    InputEvent::Hold => *model = 0,
-                    _ => (),
-                })
-                .unwrap();
+            components::Speed {
+                speed: ui.model.speed,
+                rect: ui.target.bounding_box(),
+            }
+            .show(ui, |model, event| match event {
+                InputEvent::Left(_velocity) => model.speed -= 1,
+                InputEvent::Right(_velocity) => model.speed += 1,
+                InputEvent::Hold => model.speed = 0,
+                _ => (),
+            })
+            .unwrap();
+
+            // components::AddressSelector::new(&ui.model.decoders) // TODO: make static?
+            //     .show(ui, |model, event| {})
+            //     .unwrap();
         });
     })
     .run()

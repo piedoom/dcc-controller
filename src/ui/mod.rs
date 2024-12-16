@@ -1,9 +1,20 @@
 // use dcc_rs::packets;
 
+pub mod components;
+
+use core::borrow::{Borrow, BorrowMut};
+
+use arrayvec::ArrayVec;
+use defmt::dbg;
 use embassy_time::{Duration, Ticker};
 use embedded_graphics::{
-    Drawable, mono_font::MonoTextStyleBuilder, pixelcolor::Rgb565, prelude::*,
+    Drawable,
+    mono_font::MonoTextStyleBuilder,
+    pixelcolor::Rgb565,
+    prelude::*,
+    primitives::{self, Rectangle, StyledDrawable},
 };
+use esp_println::println;
 use ringbuffer::RingBuffer;
 
 use crate::{
@@ -32,6 +43,8 @@ where
     pub model: &'a mut M,
 
     pub target: &'a mut D,
+
+    pub focused: bool,
 }
 
 impl<'a, D, M> Ui<'a, D, M>
@@ -47,12 +60,17 @@ where
             events,
             model,
             target,
+            focused: false,
         }
     }
 
     /// Determines whether the current context is currently active
-    pub fn active(&self) -> bool {
+    pub fn hovered(&self) -> bool {
         self.view_cursor == self.view_incrementer && self.id_cursor == self.id_incrementer
+    }
+
+    pub fn active(&self) -> bool {
+        self.hovered() && self.focused
     }
 }
 
@@ -112,11 +130,33 @@ where
             // Clear previous frame
             let _ = ui.target.clear(self.clear_color);
 
+            // Reset view incrementer
+            ui.view_incrementer = 0;
+
+            // Read events and apply global UI events
+            critical_section::with(|cs| {
+                for event in ui.events.borrow_ref(cs).borrow().as_ref().unwrap().iter() {
+                    match event {
+                        // InputEvent::Left(_) => todo!(),
+                        // InputEvent::Right(_) => todo!(),
+                        InputEvent::Click => ui.focused = !ui.focused,
+                        // InputEvent::DoubleClick => ui.focused = false,
+                        // InputEvent::Hold => todo!(),
+                        _ => (),
+                    }
+                }
+            });
+
             // Render UI
             (self.show)(&mut ui);
 
             // Flush
             (self.flush)(ui.target);
+
+            // Clear events queue in case it wasn't consume
+            critical_section::with(|cs| {
+                for _ in ui.events.borrow(cs).borrow_mut().as_mut().unwrap().drain() {}
+            });
 
             // Wait for next frame
             ticker.next().await;
@@ -141,7 +181,6 @@ impl View {
 
 pub trait Component {
     type Color = Rgb565;
-    type Properties = ();
 
     fn render<D, M>(&self, ui: &mut Ui<D, M>) -> Result<(), D::Error>
     where
@@ -155,14 +194,14 @@ pub trait Component {
         D: DrawTarget<Color = Self::Color>,
     {
         // If active, apply events
-        // if ui.active() { TODO: reenable
-        // Dequeue all events and apply to the view
-        critical_section::with(|cs| {
-            for event in ui.events.borrow(cs).borrow_mut().as_mut().unwrap().drain() {
-                (react)(ui.model, event);
-            }
-        });
-        // }
+        if ui.active() {
+            // Dequeue all events and apply to the view
+            critical_section::with(|cs| {
+                for event in ui.events.borrow(cs).borrow_mut().as_mut().unwrap().drain() {
+                    (react)(ui.model, event);
+                }
+            });
+        }
 
         self.render(ui)?;
         // Increment index
@@ -173,44 +212,4 @@ pub trait Component {
     // fn on_focus(model: &mut M) {}
     // fn on_defocus(model: &mut M) {}
     // fn on_click(model: &mut M) {}
-}
-
-pub struct Speed {
-    pub speed: usize,
-}
-
-impl Component for Speed {
-    fn render<D, M>(&self, ui: &mut Ui<D, M>) -> Result<(), D::Error>
-    where
-        D: DrawTarget<Color = Self::Color>,
-    {
-        let mut buffer = itoa::Buffer::new();
-        let speed = buffer.format(self.speed);
-        embedded_graphics::text::Text::new(
-            speed,
-            ui.target.bounding_box().center(),
-            MonoTextStyleBuilder::new()
-                .font(&embedded_graphics::mono_font::ascii::FONT_10X20)
-                .text_color(Rgb565::WHITE)
-                .build(),
-        )
-        .draw(ui.target)?;
-        // Generate graphics
-        embedded_graphics::primitives::Triangle::new(
-            Point::new(8 + self.speed as i32, 16 + 16),
-            Point::new(8 + self.speed as i32 + 16, 16 + 16),
-            Point::new(8 + self.speed as i32 + 8, 16),
-        )
-        .into_styled(embedded_graphics::primitives::PrimitiveStyle::with_stroke(
-            Self::Color::YELLOW,
-            2,
-        ))
-        .draw(ui.target)?;
-
-        Ok(())
-    }
-
-    type Color = Rgb565;
-
-    type Properties = ();
 }

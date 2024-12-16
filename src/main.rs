@@ -140,7 +140,7 @@ async fn main(spawner: Spawner) {
 
     let sw: pins::rotary_encoder::Switch = Input::new_typed(p.GPIO21, esp_hal::gpio::Pull::Down);
     let button_config: ButtonConfig<embassy_time::Duration> = button_driver::ButtonConfig {
-        mode: button_driver::Mode::PullDown,
+        mode: button_driver::Mode::PullUp,
         ..Default::default()
     };
 

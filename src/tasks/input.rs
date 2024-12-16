@@ -41,22 +41,16 @@ pub async fn process_button_input(
             let mut input_events = events.borrow(cs).borrow_mut();
             if let Some(input_events) = input_events.as_mut() {
                 if let Some(held) = button.held_time() {
-                    if held > embassy_time::Duration::from_secs(1) {
+                    if held > embassy_time::Duration::from_secs(2) {
                         input_events.push(InputEvent::Hold);
                     }
                 }
-                // match button_state {
-                // async_button::ButtonEvent::ShortPress { count } => {
-                //     input_events.push(if count == 1 {
-                //         InputEvent::Click
-                //     } else {
-                //         InputEvent::DoubleClick
-                //     });
-                // }
-                // async_button::ButtonEvent::LongPress => {
-                //     input_events.push(InputEvent::Hold);
-                // }
-                // }
+                if button.is_clicked() {
+                    input_events.push(InputEvent::Click);
+                }
+                if button.is_double_clicked() {
+                    input_events.push(InputEvent::DoubleClick);
+                }
             }
         });
         button.reset();
