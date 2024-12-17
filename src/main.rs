@@ -6,7 +6,6 @@
 mod dcc;
 mod devices;
 pub mod tasks;
-pub mod ui;
 
 use button_driver::ButtonConfig;
 use devices::dcc::*;
