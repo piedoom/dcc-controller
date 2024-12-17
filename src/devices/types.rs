@@ -2,7 +2,6 @@ use dcc_rs::DccInterruptHandler;
 use esp_hal::{
     Blocking,
     gpio::{GpioPin, Output},
-    ledc::timer::Timer,
     peripherals::SPI2,
     spi::master::Spi,
 };

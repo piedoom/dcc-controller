@@ -9,29 +9,25 @@ pub mod tasks;
 pub mod ui;
 
 use button_driver::ButtonConfig;
-use dcc::Operations;
-use dcc_rs::DccInterruptHandler;
-use devices::{Global, dcc::*};
+use devices::dcc::*;
 use embassy_executor::Spawner;
 
 use esp_backtrace as _;
-use esp_hal::interrupt;
 use esp_hal::interrupt::software::SoftwareInterruptControl;
 use esp_hal::rmt::{Rmt, TxChannelConfig, TxChannelCreatorAsync};
 use esp_hal::timer::AnyTimer;
 use esp_hal::{
-    self as hal, Blocking,
+    Blocking,
     analog::adc::{Adc, AdcConfig},
     delay::Delay,
     gpio::{Input, Level, Output},
-    interrupt::{Priority, software::SoftwareInterrupt},
-    peripherals::{Interrupt, SPI2},
+    interrupt::Priority,
+    peripherals::SPI2,
     spi::master::Spi,
     timer::timg::TimerGroup,
 };
 use esp_hal_embassy::InterruptExecutor;
 use fugit::RateExtU32;
-use hal::prelude::*;
 
 use ssd1331::{DisplayRotation, Ssd1331};
 
@@ -40,17 +36,19 @@ use tasks::input::{self, EventBuffer};
 
 #[esp_hal_embassy::main]
 async fn main(spawner: Spawner) {
-    // peripherals
-    let p = esp_hal::init(esp_hal::Config::default());
+    // One ADC powers both modes' current sense, so we define it out here and populate it in each section
+    let mut adc_config = AdcConfig::new();
 
-    // Set up timer for embassy
+    // Start embassy and get peripherals
+    let p = esp_hal::init(esp_hal::Config::default());
     let timg0 = TimerGroup::new(p.TIMG0);
     let timg1 = TimerGroup::new(p.TIMG1);
     let timers: [AnyTimer; 2] = [timg0.timer0.into(), timg1.timer0.into()];
     esp_hal_embassy::init(timers);
 
-    // One ADC powers both modes' current sense, so we define it out here and populate it in each section
-    let mut adc_config = AdcConfig::new();
+    /////////////
+    //  Setup  //
+    /////////////
 
     // Functions to block out initialization for easier reading
     let init_operations_dcc = || {
@@ -68,30 +66,10 @@ async fn main(spawner: Spawner) {
             // Add enable pin with a default level set to high to enable transmission
             // TODO: probably want to make this start low, check for issues, then switch on
             ENABLE.replace(cs, Some(Output::new_typed(p.GPIO1, Level::High)));
-
-            // // Create DCC interrupt driver and timer
-            // DRIVER.replace(
-            //     cs,
-            //     Some(DccInterruptHandler::new(Output::new_typed(
-            //         p.GPIO2,
-            //         Level::Low,
-            //     ))),
-            // );
-
-            // let timg1 = TimerGroup::new(p.TIMG1);
-            // let timer0 = timg1.timer0;
-
-            // // Bitbang interrupt handler for DCC transmission
-            // timer0.set_interrupt_handler(tasks::dcc_operations_step);
-            // interrupt::enable(Interrupt::TG0_T0_LEVEL, Priority::Priority1).unwrap();
-            // timer0.start();
-            // timer0.listen();
-
-            // TIMER.replace(cs, Some(timer0));
         });
     };
 
-    let rmt = || {
+    let init_rmt = || {
         let rmt = Rmt::new(p.RMT, 80u32.MHz()).unwrap().into_async();
         let tx_pin: <dcc::Operations as devices::pins::dcc::Mode>::Data =
             Output::new_typed(p.GPIO2, Level::Low);
@@ -104,7 +82,7 @@ async fn main(spawner: Spawner) {
             .unwrap()
     };
 
-    let init_display = || {
+    let init_display = |rotation: DisplayRotation| {
         // SPI
         let (sck, mosi): (pins::spi::Sck, pins::spi::Mosi) = (
             Output::new_typed(p.GPIO8, Level::Low),
@@ -121,34 +99,38 @@ async fn main(spawner: Spawner) {
 
         let dc: pins::spi::Dc = Output::new_typed(p.GPIO7, Level::Low);
 
-        Ssd1331::new(spi, dc, DisplayRotation::Rotate0)
+        let mut display = Ssd1331::new(spi, dc, rotation);
+
+        display.flush().unwrap();
+        let mut res: pins::spi::Res = Output::new_typed(p.GPIO9, Level::Low);
+        display.reset(&mut res, &mut Delay::new()).unwrap();
+        display.init().unwrap();
+        display.flush().unwrap();
+        (display, res)
     };
 
-    // Begin calling setup functions and create devices
+    /////////////
+    //  Start  //
+    /////////////
 
     // DCC pins and devices
     // TODO: Set up service mode pins
     init_operations_dcc();
+
+    // TODO: init_service_dcc
 
     // Populate the ADC device with our current sense pins now that they have been initialized for both modes
     critical_section::with(|cs| {
         ADC.replace(cs, Some(Adc::new(p.ADC1, adc_config)));
     });
 
-    // Create OLED display via SPI
-    // We don't put this in global storage since we'll give exclusive access to the rendering task
-    let mut display = init_display();
+    // Create the RMT remote control device that we'll use to send the DCC signal
+    let rmt = init_rmt();
 
-    // Reset the display and set configuration
-    let mut rst: pins::spi::Res = Output::new_typed(p.GPIO9, Level::Low);
-    display.flush().unwrap();
-    display.reset(&mut rst, &mut Delay::new()).unwrap();
-    display.set_rotation(DisplayRotation::Rotate180).unwrap();
-    display.init().unwrap();
-    display.flush().unwrap();
+    // Create OLED display via SPI
+    let (mut display, mut reset) = init_display(DisplayRotation::Rotate180);
 
     // Create the rotary encoder device
-
     let (dt, clk): (pins::rotary_encoder::Data, pins::rotary_encoder::Clock) = (
         Input::new_typed(p.GPIO20, esp_hal::gpio::Pull::Up),
         Input::new_typed(p.GPIO6, esp_hal::gpio::Pull::Up),
@@ -163,14 +145,15 @@ async fn main(spawner: Spawner) {
         mode: button_driver::Mode::PullDown,
         ..Default::default()
     };
-
     let button = button_driver::Button::new(sw, button_config);
 
     let event_queue = EventBuffer::new();
 
     critical_section::with(|cs| input::EVENTS.replace(cs, Some(event_queue)));
 
-    // Spawn tasks
+    /////////////
+    //  Tasks  //
+    /////////////
 
     // DCC transmission related tasks
     static EXECUTOR: static_cell::StaticCell<InterruptExecutor<2>> = static_cell::StaticCell::new();
@@ -182,7 +165,7 @@ async fn main(spawner: Spawner) {
     high_priority.must_spawn(tasks::dcc_operations_transmit(
         &devices::dcc::operations::DRIVER,
     ));
-    high_priority.must_spawn(tasks::dcc_operations_step_v3(rmt()));
+    high_priority.must_spawn(tasks::dcc_operations_step_v3(rmt));
 
     spawner.must_spawn(tasks::input::process_rotary_input(
         rotary_encoder,

@@ -1,6 +1,6 @@
 use super::*;
 use crate::devices::pins;
-use dcc_rs::{DccInterruptHandler, packets::SerializeBuffer};
+use dcc_rs::packets::SerializeBuffer;
 use esp_hal::{analog::adc::Adc, peripherals::ADC1};
 
 /// One ADC device powers both modes. See [`pins`] for more specific definitions

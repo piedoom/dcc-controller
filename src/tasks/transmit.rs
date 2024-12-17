@@ -1,13 +1,6 @@
-use core::ops::Deref;
-
 use dcc_rs::packets::{self, Direction, SerializeBuffer};
-use embassy_time::{Instant, Ticker, Timer};
-use esp_hal::{
-    interrupt::Priority,
-    prelude::*,
-    rmt::{Channel, PulseCode, TxChannelAsync},
-};
-use fugit::{Duration, ExtU32};
+use embassy_time::Timer;
+use esp_hal::rmt::{Channel, PulseCode, TxChannelAsync};
 
 use crate::{
     devices::{Global, types},
