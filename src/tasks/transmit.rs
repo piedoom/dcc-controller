@@ -77,8 +77,8 @@ pub(crate) async fn dcc_operations_step_v3(mut rmt: Channel<esp_hal::Async, 0>) 
                 dcc_rs::ZERO_MICROS as u16,
                 true,
                 dcc_rs::ZERO_MICROS as u16,
-            ); 48];
-            d[47] = PulseCode::empty();
+            ); 16];
+            d[15] = PulseCode::empty();
             rmt.transmit(&d).await.unwrap();
         }
     }
