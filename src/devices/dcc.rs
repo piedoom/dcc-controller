@@ -22,13 +22,12 @@ pub(crate) mod operations {
     pub(crate) static ENABLE: Global<<Operations as Mode>::Enable> = default();
 
     /// DCC interrupt handler driver
-    pub(crate) static DRIVER: Global<DccInterruptHandler<<Operations as Mode>::Data>> = default();
-
-    /// DCC interrupt timer
-    pub(crate) static TIMER: Global<Timer<Timer0<TIMG1>, esp_hal::Blocking>> = default();
+    pub(crate) static DRIVER: Global<types::DccDriver> = default();
 
     /// Transmission buffer for operations mode
     pub(crate) static TX_BUFFER: Global<(SerializeBuffer, usize)> = default();
+
+    pub(crate) static TIMER: Global<Timer<Timer0<TIMG1>, esp_hal::Blocking>> = default();
 }
 
 /// Service (programming) mode devices and resources
