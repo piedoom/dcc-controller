@@ -2,19 +2,26 @@
 #![no_main]
 #![feature(impl_trait_in_assoc_type)]
 #![feature(associated_type_defaults)]
+#![feature(async_closure)]
 
 mod dcc;
-mod devices;
+pub mod devices;
 pub mod tasks;
 
 use button_driver::ButtonConfig;
-use devices::dcc::*;
+use devices::dcc::ADC;
 use embassy_executor::Spawner;
 
+use embedded_hal_bus::spi::{ExclusiveDevice, NoDelay};
 use esp_backtrace as _;
+use esp_hal::dma::{Dma, DmaRxBuf, DmaTxBuf};
+use esp_hal::gpio::{AnyPin, NoPin, OutputPin};
 use esp_hal::interrupt::software::SoftwareInterruptControl;
 use esp_hal::rmt::{Rmt, TxChannelConfig, TxChannelCreatorAsync};
+use esp_hal::spi::master::{SpiDma, SpiDmaBus};
+use esp_hal::spi::{AnySpi, SpiMode};
 use esp_hal::timer::AnyTimer;
+use esp_hal::{Async, dma_buffers};
 use esp_hal::{
     Blocking,
     analog::adc::{Adc, AdcConfig},
@@ -28,9 +35,8 @@ use esp_hal::{
 use esp_hal_embassy::InterruptExecutor;
 use fugit::RateExtU32;
 
-use ssd1331::{DisplayRotation, Ssd1331};
-
 use devices::pins;
+use ssd1322_rs::Orientation;
 use tasks::input::{self, EventBuffer};
 
 #[esp_hal_embassy::main]
@@ -81,31 +87,45 @@ async fn main(spawner: Spawner) {
             .unwrap()
     };
 
-    let init_display = |rotation: DisplayRotation| {
+    let init_display = async || {
         // SPI
         let (sck, mosi): (pins::spi::Sck, pins::spi::Mosi) = (
             Output::new_typed(p.GPIO8, Level::Low),
             Output::new_typed(p.GPIO10, Level::Low),
         );
 
-        let spi =
-            Spi::<Blocking, SPI2>::new_typed_with_config(p.SPI2, esp_hal::spi::master::Config {
-                frequency: 50_000_000u32.Hz(),
+        let dma = Dma::new(p.DMA);
+        let dma_channel = dma.channel0;
+        let (rx_buffer, rx_descriptors, tx_buffer, tx_descriptors) = dma_buffers!(32000);
+        let spi_bus = Spi::<Async>::new_typed_with_config(
+            AnySpi::from(p.SPI2),
+            esp_hal::spi::master::Config {
+                frequency: 8_000_000u32.Hz(),
                 ..Default::default()
-            })
-            .with_sck(sck)
-            .with_mosi(mosi);
+            },
+        )
+        .with_sck(sck)
+        .with_mosi(mosi)
+        .with_dma(dma_channel.configure(false, esp_hal::dma::DmaPriority::Priority1));
 
         let dc: pins::spi::Dc = Output::new_typed(p.GPIO7, Level::Low);
+        let res: pins::spi::Res = Output::new_typed(p.GPIO9, Level::Low);
 
-        let mut display = Ssd1331::new(spi, dc, rotation);
+        let spi_dma: SpiDmaBus<Async> = SpiDmaBus::new(
+            spi_bus,
+            DmaRxBuf::new(rx_descriptors, rx_buffer).unwrap(),
+            DmaTxBuf::new(tx_descriptors, tx_buffer).unwrap(),
+        ); // = SpiDmaBus::new(spi_dma, rx_buf, tx_buf);
 
-        display.flush().unwrap();
-        let mut res: pins::spi::Res = Output::new_typed(p.GPIO9, Level::Low);
-        display.reset(&mut res, &mut Delay::new()).unwrap();
-        display.init().unwrap();
-        display.flush().unwrap();
-        (display, res)
+        let spi_dev = ExclusiveDevice::new_no_delay(spi_dma, NoPin).unwrap();
+
+        let mut display = ssd1322_rs::SSD1322::new(spi_dev, dc, res, NoPin, Default::default());
+        display
+            .init_default(&mut embassy_time::Delay)
+            .await
+            .unwrap();
+
+        display
     };
 
     /////////////
@@ -127,12 +147,12 @@ async fn main(spawner: Spawner) {
     let rmt = init_rmt();
 
     // Create OLED display via SPI
-    let (mut display, mut reset) = init_display(DisplayRotation::Rotate180);
+    let display = init_display().await;
 
     // Create the rotary encoder device
     let (dt, clk): (pins::rotary_encoder::Data, pins::rotary_encoder::Clock) = (
-        Input::new_typed(p.GPIO20, esp_hal::gpio::Pull::Up),
-        Input::new_typed(p.GPIO6, esp_hal::gpio::Pull::Up),
+        Input::new_typed(p.GPIO20, esp_hal::gpio::Pull::None),
+        Input::new_typed(p.GPIO6, esp_hal::gpio::Pull::None),
     );
     let rotary_encoder =
         rotary_encoder_embedded::RotaryEncoder::new(dt, clk).into_angular_velocity_mode();

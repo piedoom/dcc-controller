@@ -40,6 +40,13 @@ pub async fn process_button_input(
         critical_section::with(|cs| {
             let mut input_events = events.borrow(cs).borrow_mut();
             if let Some(input_events) = input_events.as_mut() {
+                let clicks = button.clicks();
+                if clicks == 2 {
+                    input_events.push(InputEvent::DoubleClick);
+                } else if clicks == 1 {
+                    input_events.push(InputEvent::Click);
+                }
+
                 if let Some(held) = button.held_time() {
                     if held > embassy_time::Duration::from_secs(1) {
                         input_events.push(InputEvent::Hold);
@@ -82,11 +89,9 @@ pub async fn process_rotary_input(
                 match direction {
                     rotary_encoder_embedded::Direction::None => (),
                     rotary_encoder_embedded::Direction::Clockwise => {
-                        println!("{}", rotary_encoder.velocity());
                         input_events.push(InputEvent::Left(rotary_encoder.velocity()))
                     }
                     rotary_encoder_embedded::Direction::Anticlockwise => {
-                        println!("{}", rotary_encoder.velocity());
                         input_events.push(InputEvent::Right(rotary_encoder.velocity()))
                     }
                 }

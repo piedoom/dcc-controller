@@ -1,0 +1,92 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "7efe1df6-5968-492e-a8e1-8e88b3d52b88")
+	(paper "A4")
+	(lib_symbols)
+	(hierarchical_label "BLK"
+		(shape input)
+		(at 91.44 95.25 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "3d04f48b-b33c-4ef2-b903-020ee0159d9a")
+	)
+	(hierarchical_label "DC"
+		(shape input)
+		(at 91.44 90.17 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "45b5cfc6-29ed-44cd-8122-48a0b6af7f3f")
+	)
+	(hierarchical_label "SDA(MOSI)"
+		(shape input)
+		(at 91.44 85.09 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "6f31680e-6616-4159-8de6-4035e80c518a")
+	)
+	(hierarchical_label "SCL(SCK)"
+		(shape input)
+		(at 91.44 81.28 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a070c268-44c6-487c-97da-abc9fa0fc651")
+	)
+	(hierarchical_label "RES"
+		(shape input)
+		(at 91.44 87.63 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "d6d5ebd9-4920-485f-8c76-6e0e87082eb7")
+	)
+	(hierarchical_label "VCC_3.3V"
+		(shape input)
+		(at 91.44 73.66 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e66af6f4-d880-431a-99da-d3bfe3189729")
+	)
+	(hierarchical_label "CS"
+		(shape input)
+		(at 91.44 92.71 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ef6c965f-1aff-4f1f-a455-d66c122054e1")
+	)
+)

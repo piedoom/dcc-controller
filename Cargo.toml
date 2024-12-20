@@ -8,7 +8,6 @@ debug = true
 
 [dependencies]
 critical-section = "1.2.0"
-display-interface-spi = "0.5.0"
 embassy-embedded-hal = "0.2.0"
 embassy-sync = "0.6.1"
 embassy-time = { version = "*" }
@@ -16,13 +15,18 @@ embedded-graphics = "^0.8"
 embedded-hal = "1.0.0"
 fugit = "0.3.7"
 rotary-encoder-embedded = "0.3.1"
-ssd1331 = { path = "../ssd1331" }
-
+# ssd1331 = { path = "../ssd1331" }
+ssd1322_rs = { git = "https://github.com/birdistheword96/ssd1322_rs" }
 defmt = "0.3.10"
-itoa = "1.0.14"
+
 libm = "0.2.11"
 kolibri-embedded-gui = { git = "https://github.com/piedoom/kolibri", branch = "restructure" }
 static_cell = "2.1.0"
+embedded-hal-bus = { version = "0.2.0", features = ["async"] }
+
+itoa = "1.0.14"
+dtoa = "1.0.9"
+heapless = { version = "0.8.0" }
 
 [dependencies.ringbuffer]
 version = "0.15.0"

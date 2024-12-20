@@ -1,10 +1,17 @@
 use super::*;
 use crate::devices::pins;
-use dcc_rs::packets::SerializeBuffer;
+use dcc_rs::packets::{self, SerializeBuffer, SpeedAndDirection};
+use defmt::{assert, expect};
 use esp_hal::{analog::adc::Adc, peripherals::ADC1};
 
 /// One ADC device powers both modes. See [`pins`] for more specific definitions
 pub(crate) static ADC: Global<Adc<ADC1>> = default();
+
+pub struct DeviceState {
+    /// Normalized speed and direction
+    pub speed: i8,
+    pub address: u8,
+}
 
 /// Operations mode devices and resources
 pub(crate) mod operations {
@@ -26,6 +33,11 @@ pub(crate) mod operations {
 
     /// Transmission buffer for operations mode
     pub(crate) static TX_BUFFER: Global<(SerializeBuffer, usize)> = default();
+
+    pub(crate) static STATE: Global<DeviceState> = Global::new(RefCell::new(Some(DeviceState {
+        speed: 0,
+        address: 3,
+    })));
 
     pub(crate) static TIMER: Global<Timer<Timer0<TIMG1>, esp_hal::Blocking>> = default();
 }

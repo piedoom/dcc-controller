@@ -393,23 +393,19 @@
     ],
     [
       "ea86c723-6a22-4b5c-9e57-bd798d3264f2",
-      "Inverter"
+      "Inverter A"
     ],
     [
       "7b5306f8-6960-4f30-ab3a-ae62b5dbb2a8",
-      "Inverter1"
+      "Inverter B"
     ],
     [
       "537f0731-3eec-429a-8522-0f082ccd8802",
-      "Motor controller"
+      "Motor controller (L298N)"
     ],
     [
       "0f4a4f40-6b42-4401-8b4b-f69494b4d7c0",
       "Rotary encoder"
-    ],
-    [
-      "b1e7bbcf-368b-4d82-80ea-a7a260162ef6",
-      "Screen"
     ],
     [
       "32c2b422-965c-48a7-ae87-7d3f23e7b8fb",
@@ -426,6 +422,10 @@
     [
       "d2fa69c2-c3e0-43db-84db-bb1b3a6e2002",
       "Logic converter"
+    ],
+    [
+      "b47ba95e-6fc8-4d8d-ac39-23ce00e2c905",
+      "Screen (SSD1322)"
     ]
   ],
   "text_variables": {}

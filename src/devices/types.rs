@@ -1,10 +1,12 @@
 use dcc_rs::DccInterruptHandler;
+use embedded_hal_bus::spi::{ExclusiveDevice, NoDelay};
 use esp_hal::{
-    Blocking,
-    gpio::{GpioPin, Output},
+    Async, Blocking,
+    gpio::{GpioPin, NoPin, Output},
     peripherals::SPI2,
-    spi::master::Spi,
+    spi::master::{Spi, SpiDmaBus},
 };
+use ssd1322_rs::SSD1322;
 
 use crate::{dcc::Operations, devices::pins};
 
@@ -24,4 +26,9 @@ pub type Button<'d> = button_driver::Button<
 
 pub type DccDriver<'d> = DccInterruptHandler<<Operations as Mode<'d>>::Data>;
 
-pub type Display<'d> = ssd1331::Ssd1331<Spi<'d, Blocking, SPI2>, Output<'d, GpioPin<7>>>;
+pub type Display<'d> = SSD1322<
+    ExclusiveDevice<SpiDmaBus<'d, Async>, NoPin, NoDelay>,
+    Output<'d, GpioPin<7>>,
+    Output<'d, GpioPin<9>>,
+    NoPin,
+>; //ssd1331_r::Ssd1331<Spi<'d, Blocking, SPI2>, Output<'d, GpioPin<7>>>;
