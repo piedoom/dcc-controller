@@ -1,0 +1,188 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "271500fd-e62f-4cdb-a2e2-6f390f203178")
+	(paper "A4")
+	(lib_symbols)
+	(hierarchical_label "GPIO_5"
+		(shape input)
+		(at 105.41 99.06 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "0b34d91d-7c56-4008-bf89-800acb119727")
+	)
+	(hierarchical_label "VCC_3.3V"
+		(shape input)
+		(at 105.41 76.2 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2deef1e9-958c-49cf-87f6-18a546277165")
+	)
+	(hierarchical_label "GPIO_3"
+		(shape input)
+		(at 105.41 93.98 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "325d6d62-e602-425f-8ab3-dab32e31c477")
+	)
+	(hierarchical_label "GPIO_10"
+		(shape input)
+		(at 105.41 111.76 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "3a9be00c-5f17-4399-ac0e-146f7b740bf4")
+	)
+	(hierarchical_label "GPIO_8"
+		(shape input)
+		(at 105.41 106.68 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "63197b15-b567-461a-a783-af7e770d4a1b")
+	)
+	(hierarchical_label "GPIO_7"
+		(shape input)
+		(at 105.41 104.14 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "69e43bd0-9a6d-4542-ab1d-8b0036b8a63c")
+	)
+	(hierarchical_label "GPIO_4"
+		(shape input)
+		(at 105.41 96.52 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7bbcff33-faf3-457b-b445-e3bc1d93a515")
+	)
+	(hierarchical_label "GPIO_6"
+		(shape input)
+		(at 105.41 101.6 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7f11c354-d1a2-4627-98d2-c7f897bc0bd3")
+	)
+	(hierarchical_label "GPIO_21"
+		(shape input)
+		(at 105.41 116.84 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "84223df8-a604-43f0-8952-9d113040476a")
+	)
+	(hierarchical_label "GPIO_20"
+		(shape input)
+		(at 105.41 114.3 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "96f32f27-c77a-4264-8fa2-fa8d7f453db2")
+	)
+	(hierarchical_label "GPIO_0"
+		(shape input)
+		(at 105.41 86.36 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9a303a7b-8dc8-4846-8bf0-895fc09d50b9")
+	)
+	(hierarchical_label "GPIO_2"
+		(shape input)
+		(at 105.41 91.44 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "adec3288-0d19-4dee-80b9-6bb8bef154ee")
+	)
+	(hierarchical_label "GPIO_9"
+		(shape input)
+		(at 105.41 109.22 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b08bdc13-7455-4b9f-a47f-26cce6e3b98c")
+	)
+	(hierarchical_label "VCC_5V"
+		(shape input)
+		(at 105.41 73.66 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b26844b0-f5e0-427c-b591-4d4d5f0521bb")
+	)
+	(hierarchical_label "GPIO_1"
+		(shape input)
+		(at 105.41 88.9 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e8846d3d-2b48-4cdc-a5ac-9b8724184203")
+	)
+)

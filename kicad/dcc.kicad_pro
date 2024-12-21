@@ -371,6 +371,14 @@
       "version": 1
     },
     "net_format_name": "",
+    "ngspice": {
+      "fix_include_paths": true,
+      "meta": {
+        "version": 0
+      },
+      "model_mode": 4,
+      "workbook_filename": ""
+    },
     "page_layout_descr_file": "",
     "plot_directory": "",
     "spice_current_sheet_as_root": false,
@@ -426,6 +434,14 @@
     [
       "b47ba95e-6fc8-4d8d-ac39-23ce00e2c905",
       "Screen (SSD1322)"
+    ],
+    [
+      "a81dbc90-9951-4348-9000-55a2ee374a98",
+      "esp32c3rx"
+    ],
+    [
+      "bce221a1-3f98-4830-92f6-4b4f6a4941ad",
+      "led"
     ]
   ],
   "text_variables": {}
