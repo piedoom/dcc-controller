@@ -416,6 +416,10 @@
       "Rotary encoder"
     ],
     [
+      "71154536-b43a-49be-a048-e9915336cadb",
+      "Rotary encoder1"
+    ],
+    [
       "32c2b422-965c-48a7-ae87-7d3f23e7b8fb",
       "Transmitter"
     ],
@@ -442,6 +446,46 @@
     [
       "bce221a1-3f98-4830-92f6-4b4f6a4941ad",
       "led"
+    ],
+    [
+      "306d6771-f5e2-441f-935a-3370be82ec6b",
+      "ESP32-C6"
+    ],
+    [
+      "ee6f512c-bff3-4984-8760-9c95471929db",
+      "Screen (SSD1322)1"
+    ],
+    [
+      "49f18b2e-f286-471a-96ea-cda6a906fc79",
+      "Motor controller (L298N)1"
+    ],
+    [
+      "1469f248-fbe5-475e-8228-88353993259e",
+      "Inverter A1"
+    ],
+    [
+      "284be819-3c43-4611-9e99-faab9dfd8e29",
+      "Inverter A2"
+    ],
+    [
+      "0c3e7b7b-cb38-4a1b-8059-684e76c49ecd",
+      "Button1"
+    ],
+    [
+      "07dc82b4-ff6e-411b-951c-6704f88e0f68",
+      "Button"
+    ],
+    [
+      "7b3b95ba-7f38-4751-a443-ad25d4c41e09",
+      "Button2"
+    ],
+    [
+      "4719d1eb-cf2d-47ff-b071-3767ef61e3e8",
+      "led1"
+    ],
+    [
+      "3c3350b0-7269-44ea-ac7b-f964376fa21d",
+      "led2"
     ]
   ],
   "text_variables": {}

@@ -285,168 +285,6 @@
 				)
 			)
 		)
-		(symbol "Diode:1N4001"
-			(pin_numbers hide)
-			(pin_names hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "D"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "1N4001"
-				(at 0 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "http://www.vishay.com/docs/88503/1n4001.pdf"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "50V 1A General Purpose Rectifier Diode, DO-41"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Device" "D"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Sim.Pins" "1=K 2=A"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "diode"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "D*DO?41*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "1N4001_0_1"
-				(polyline
-					(pts
-						(xy -1.27 1.27) (xy -1.27 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 0) (xy -1.27 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "1N4001_1_1"
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "K"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "Diode_Bridge:MB6S"
 			(pin_names
 				(offset 0)
@@ -958,7 +796,7 @@
 		(at 154.94 76.2)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "c892f55b-a7a0-4f11-b3a8-2ce0f21a17f3")
+		(uuid "73f6aca4-113d-4d7b-ba76-a6ff9cc2238e")
 	)
 	(junction
 		(at 168.91 90.17)
@@ -1004,16 +842,6 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 34.29) (xy 203.2 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "18f88b83-806f-435f-b690-dced096638a8")
-	)
-	(wire
-		(pts
 			(xy 124.46 76.2) (xy 121.92 76.2)
 		)
 		(stroke
@@ -1054,7 +882,7 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 50.8) (xy 203.2 76.2)
+			(xy 203.2 34.29) (xy 203.2 76.2)
 		)
 		(stroke
 			(width 0)
@@ -1124,7 +952,7 @@
 	)
 	(wire
 		(pts
-			(xy 168.91 49.53) (xy 168.91 76.2)
+			(xy 168.91 33.02) (xy 168.91 76.2)
 		)
 		(stroke
 			(width 0)
@@ -1181,16 +1009,6 @@
 			(type default)
 		)
 		(uuid "ad2d772d-90d5-467d-8295-3f929f7e3f5c")
-	)
-	(wire
-		(pts
-			(xy 168.91 33.02) (xy 168.91 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b04bb7cb-19a0-4be4-bd76-293193dbdddb")
 	)
 	(wire
 		(pts
@@ -1260,7 +1078,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "dbf6860b-df06-4d32-8c42-12ba0f9954e2")
+		(uuid "dced3cf1-f95c-4d7e-b7ae-50c71f9cc166")
 	)
 	(wire
 		(pts
@@ -1271,6 +1089,16 @@
 			(type default)
 		)
 		(uuid "fc4e1680-8a71-4142-a1c4-bc9b13dcda39")
+	)
+	(text "Actual ~9-10V\n"
+		(exclude_from_sim no)
+		(at 161.036 32.258 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "1e7edeb1-e2c6-49ae-bf7e-f1f095d8c97e")
 	)
 	(text "800mA\n"
 		(exclude_from_sim no)
@@ -1351,94 +1179,6 @@
 			(justify right)
 		)
 		(uuid "b5c7edc3-56e9-48ff-a628-a6e466412690")
-	)
-	(symbol
-		(lib_id "Diode:1N4001")
-		(at 203.2 46.99 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "043887dd-b5e2-47a8-b068-89afbe069ddf")
-		(property "Reference" "D3"
-			(at 205.74 45.72 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1N4001"
-			(at 205.74 48.26 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
-			(at 203.2 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.vishay.com/docs/88503/1n4001.pdf"
-			(at 203.2 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "50V 1A General Purpose Rectifier Diode, DO-41"
-			(at 203.2 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 203.2 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 203.2 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "5c5be0b1-92a1-4f40-a827-13cf1fcb2604")
-		)
-		(pin "2"
-			(uuid "0aac20b3-b52b-4840-91b2-568bb93bf108")
-		)
-		(instances
-			(project ""
-				(path "/11b6b3e0-6260-4ffa-b9c7-47f3b03473c9/e71ecf15-c300-4c9d-862f-92665ebf3933/fe0267e8-6263-40e8-a151-ccbc1a5c7034"
-					(reference "D3")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "Diode_Bridge:MB6S")
@@ -1657,94 +1397,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Diode:1N4001")
-		(at 168.91 45.72 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "6597bf8e-7768-482e-9426-83291f77a49b")
-		(property "Reference" "D4"
-			(at 171.45 44.45 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1N4001"
-			(at 171.45 46.99 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
-			(at 168.91 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.vishay.com/docs/88503/1n4001.pdf"
-			(at 168.91 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "50V 1A General Purpose Rectifier Diode, DO-41"
-			(at 168.91 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 168.91 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 168.91 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e4bbbd34-6591-4847-958b-c3b0f4742c37")
-		)
-		(pin "2"
-			(uuid "110126c1-12eb-472c-a522-6c41565bd225")
-		)
-		(instances
-			(project "dcc"
-				(path "/11b6b3e0-6260-4ffa-b9c7-47f3b03473c9/e71ecf15-c300-4c9d-862f-92665ebf3933/fe0267e8-6263-40e8-a151-ccbc1a5c7034"
-					(reference "D4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 184.15 92.71 0)
 		(unit 1)
@@ -1829,7 +1481,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "470uF"
+		(property "Value" "47uF"
 			(at 158.75 83.185 0)
 			(effects
 				(font
