@@ -1,4 +1,0 @@
-[workspace]
-
-members = ["controller", "decoder"]
-resolver = "2"

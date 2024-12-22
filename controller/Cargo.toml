@@ -7,6 +7,7 @@ edition = "2024"
 debug = true
 
 [dependencies]
+portable-atomic = { version = "*", features = ["critical-section"] }
 critical-section = "1.2.0"
 embassy-embedded-hal = "0.2.0"
 embassy-sync = "0.6.1"
@@ -16,7 +17,6 @@ embedded-hal = "1.0.0"
 fugit = "0.3.7"
 rotary-encoder-embedded = "0.3.1"
 ssd1322_rs = { git = "https://github.com/birdistheword96/ssd1322_rs" }
-defmt = "0.3.10"
 
 libm = "0.2.11"
 kolibri-embedded-gui = { git = "https://github.com/piedoom/kolibri", branch = "restructure" }
@@ -41,19 +41,19 @@ features = ["nightly"]
 
 [dependencies.esp-hal-embassy]
 version = "*"
-features = ["esp32c3", "executors", "integrated-timers"]
+features = ["esp32c6", "executors", "integrated-timers"]
 
 [dependencies.esp-hal]
 version = "0.22"
-features = ["esp32c3"]
+features = ["esp32c6"]
 
 [dependencies.esp-backtrace]
 version = "*"
-features = ["esp32c3", "panic-handler", "exception-handler", "println"]
+features = ["esp32c6", "panic-handler", "exception-handler", "println"]
 
 [dependencies.esp-println]
 version = "*"
-features = ["esp32c3"]
+features = ["esp32c6"]
 
 [dependencies.dcc-rs]
 path = "../../dcc-rs"

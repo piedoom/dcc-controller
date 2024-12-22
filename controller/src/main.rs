@@ -3,6 +3,9 @@
 #![feature(impl_trait_in_assoc_type)]
 #![feature(associated_type_defaults)]
 #![feature(async_closure)]
+// #![reexport_test_harness_main = "test_main"]
+// #![feature(custom_test_frameworks)]
+// #![test_runner(test_runner)]
 
 mod dcc;
 pub mod devices;
@@ -12,10 +15,11 @@ use button_driver::ButtonConfig;
 use devices::dcc::ADC;
 use embassy_executor::Spawner;
 
-use embedded_hal_bus::spi::{ExclusiveDevice, NoDelay};
+use embassy_time::Duration;
+use embedded_hal_bus::spi::ExclusiveDevice;
 use esp_backtrace as _;
 use esp_hal::dma::{Dma, DmaRxBuf, DmaTxBuf};
-use esp_hal::gpio::{AnyPin, NoPin, OutputPin};
+use esp_hal::gpio::{GpioPin, NoPin};
 use esp_hal::interrupt::software::SoftwareInterruptControl;
 use esp_hal::rmt::{Rmt, TxChannelConfig, TxChannelCreatorAsync};
 use esp_hal::spi::master::{SpiDma, SpiDmaBus};
@@ -35,7 +39,7 @@ use esp_hal::{
 use esp_hal_embassy::InterruptExecutor;
 use fugit::RateExtU32;
 
-use devices::pins;
+use devices::pins::{self};
 use ssd1322_rs::Orientation;
 use tasks::input::{self, EventBuffer};
 
@@ -64,20 +68,21 @@ async fn main(spawner: Spawner) {
                 cs,
                 Some(
                     adc_config
-                        .enable_pin(p.GPIO0, esp_hal::analog::adc::Attenuation::Attenuation11dB),
+                        .enable_pin(p.GPIO4, esp_hal::analog::adc::Attenuation::Attenuation11dB),
                 ),
             ); // TODO: What attenuation do I need?
 
             // Add enable pin with a default level set to high to enable transmission
             // TODO: probably want to make this start low, check for issues, then switch on
-            ENABLE.replace(cs, Some(Output::new_typed(p.GPIO1, Level::High)));
+
+            ENABLE.replace(cs, Some(Output::new_typed(p.GPIO2, Level::High)));
         });
     };
 
     let init_rmt = || {
         let rmt = Rmt::new(p.RMT, 80u32.MHz()).unwrap().into_async();
         let tx_pin: <dcc::Operations as devices::pins::dcc::Mode>::Data =
-            Output::new_typed(p.GPIO2, Level::Low);
+            Output::new_typed(p.GPIO3, Level::Low);
         rmt.channel0
             .configure(tx_pin, esp_hal::rmt::TxChannelConfig {
                 clk_divider: 80,
@@ -90,8 +95,8 @@ async fn main(spawner: Spawner) {
     let init_display = async || {
         // SPI
         let (sck, mosi): (pins::spi::Sck, pins::spi::Mosi) = (
-            Output::new_typed(p.GPIO8, Level::Low),
-            Output::new_typed(p.GPIO10, Level::Low),
+            Output::new_typed(p.GPIO21, Level::Low),
+            Output::new_typed(p.GPIO20, Level::Low),
         );
 
         let dma = Dma::new(p.DMA);
@@ -108,8 +113,8 @@ async fn main(spawner: Spawner) {
         .with_mosi(mosi)
         .with_dma(dma_channel.configure(false, esp_hal::dma::DmaPriority::Priority1));
 
-        let dc: pins::spi::Dc = Output::new_typed(p.GPIO7, Level::Low);
-        let res: pins::spi::Res = Output::new_typed(p.GPIO9, Level::Low);
+        let dc: pins::spi::Dc = Output::new_typed(p.GPIO22, Level::Low);
+        let res: pins::spi::Res = Output::new_typed(p.GPIO19, Level::Low);
 
         let spi_dma: SpiDmaBus<Async> = SpiDmaBus::new(
             spi_bus,
@@ -151,20 +156,28 @@ async fn main(spawner: Spawner) {
 
     // Create the rotary encoder device
     let (dt, clk): (pins::rotary_encoder::Data, pins::rotary_encoder::Clock) = (
-        Input::new_typed(p.GPIO20, esp_hal::gpio::Pull::None),
-        Input::new_typed(p.GPIO6, esp_hal::gpio::Pull::None),
+        Input::new_typed(p.GPIO13, esp_hal::gpio::Pull::None),
+        Input::new_typed(p.GPIO12, esp_hal::gpio::Pull::None),
     );
     let rotary_encoder =
         rotary_encoder_embedded::RotaryEncoder::new(dt, clk).into_angular_velocity_mode();
 
-    // Create button
-
-    let sw: pins::rotary_encoder::Switch = Input::new_typed(p.GPIO21, esp_hal::gpio::Pull::Down);
+    // Create buttons
     let button_config: ButtonConfig<embassy_time::Duration> = button_driver::ButtonConfig {
         mode: button_driver::Mode::PullDown,
         ..Default::default()
     };
-    let button = button_driver::Button::new(sw, button_config);
+
+    let left_button_pin: pins::buttons::LeftButton =
+        Input::new_typed(p.GPIO1, esp_hal::gpio::Pull::Down);
+    let right_button_pin: pins::buttons::RightButton =
+        Input::new_typed(p.GPIO10, esp_hal::gpio::Pull::Down);
+    let fn_button_pin: pins::buttons::FnButton =
+        Input::new_typed(p.GPIO11, esp_hal::gpio::Pull::Down);
+
+    let left_button = button_driver::Button::new(left_button_pin, button_config);
+    let right_button = button_driver::Button::new(right_button_pin, button_config);
+    let fn_button = button_driver::Button::new(fn_button_pin, button_config);
 
     let event_queue = EventBuffer::new();
 
@@ -192,7 +205,9 @@ async fn main(spawner: Spawner) {
         900.Hz(),
     ));
     spawner.must_spawn(tasks::input::process_button_input(
-        button,
+        left_button,
+        right_button,
+        fn_button,
         &input::EVENTS,
         900.Hz(),
     ));

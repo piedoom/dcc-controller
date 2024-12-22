@@ -175,31 +175,34 @@ pub async fn update_display(
 
             for event in current_events.iter() {
                 match event {
-                    input::InputEvent::Left(_) => {
+                    input::InputEvent::MoveCursor(direction) => {
                         if page.cursor_active {
                             // Widget active
                         } else {
                             // Move page cursor
-                            page.cursor = page.cursor.saturating_sub(1);
+                            page.cursor = match direction {
+                                input::MoveDirection::Left => page.cursor.saturating_sub(1),
+                                input::MoveDirection::Right => page.cursor + 1,
+                            };
                         }
                     }
-                    input::InputEvent::Right(_) => {
-                        if page.cursor_active {
-                            // Widget active
-                        } else {
-                            // Move page cursor
-                            if page.cursor < page.positions.len().saturating_sub(1) {
-                                page.cursor += 1;
-                            }
-                        }
-                    }
-                    input::InputEvent::Click => {
-                        if page.cursor_active {
-                            // Widget active
-                        } else {
-                            ui.interact(Interaction::Click(page.positions[page.cursor].center()));
-                        }
-                    }
+                    // input::InputEvent::Right(_) => {
+                    //     if page.cursor_active {
+                    //         // Widget active
+                    //     } else {
+                    //         // Move page cursor
+                    //         if page.cursor < page.positions.len().saturating_sub(1) {
+                    //             page.cursor += 1;
+                    //         }
+                    //     }
+                    // }
+                    // input::InputEvent::Click => {
+                    //     if page.cursor_active {
+                    //         // Widget active
+                    //     } else {
+                    //         ui.interact(Interaction::Click(page.positions[page.cursor].center()));
+                    //     }
+                    // }
                     // input::InputEvent::DoubleClick => todo!(),
                     input::InputEvent::Hold => {
                         // ui.interact(Interaction::Click(page.cursor));

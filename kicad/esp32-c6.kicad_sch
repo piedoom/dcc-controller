@@ -5,9 +5,9 @@
 	(uuid "cc85e629-fd90-4668-ab90-30903a454460")
 	(paper "A4")
 	(lib_symbols)
-	(text "Pin 14? LED?\n"
+	(text "8 is LED"
 		(exclude_from_sim no)
-		(at 91.186 130.81 0)
+		(at 100.584 116.078 0)
 		(effects
 			(font
 				(size 1.27 1.27)

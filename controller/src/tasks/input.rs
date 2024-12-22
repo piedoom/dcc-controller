@@ -14,6 +14,7 @@ pub static EVENTS: Global<EventBuffer> = crate::devices::default();
 
 #[derive(Debug)]
 pub enum InputEvent {
+    MoveCursor(MoveDirection),
     Left(Velocity),
     Right(Velocity),
     Click,
@@ -22,10 +23,18 @@ pub enum InputEvent {
     // TripleClick,
 }
 
+#[derive(Debug)]
+pub enum MoveDirection {
+    Left,
+    Right,
+}
+
 #[embassy_executor::task]
 
 pub async fn process_button_input(
-    mut button: types::Button<'static>,
+    mut left_button: types::LeftButton<'static>,
+    mut right_button: types::RightButton<'static>,
+    mut fn_button: types::FnButton<'static>,
     events: &'static Global<EventBuffer>,
     polling_rate: HertzU32,
 ) {
@@ -35,23 +44,32 @@ pub async fn process_button_input(
             .to_micros() as u64,
     ));
     loop {
-        button.tick();
+        left_button.tick();
+        right_button.tick();
+        fn_button.tick();
 
         critical_section::with(|cs| {
             let mut input_events = events.borrow(cs).borrow_mut();
             if let Some(input_events) = input_events.as_mut() {
-                let clicks = button.clicks();
-                if clicks == 2 {
-                    input_events.push(InputEvent::DoubleClick);
-                } else if clicks == 1 {
-                    input_events.push(InputEvent::Click);
+                if left_button.is_clicked() {
+                    input_events.push(InputEvent::MoveCursor(MoveDirection::Left));
+                }
+                if right_button.is_clicked() {
+                    input_events.push(InputEvent::MoveCursor(MoveDirection::Right));
                 }
 
-                if let Some(held) = button.held_time() {
-                    if held > embassy_time::Duration::from_secs(1) {
-                        input_events.push(InputEvent::Hold);
-                    }
-                }
+                // let clicks = button.clicks();
+                // if clicks == 2 {
+                //     input_events.push(InputEvent::DoubleClick);
+                // } else if clicks == 1 {
+                //     input_events.push(InputEvent::Click);
+                // }
+
+                // if let Some(held) = button.held_time() {
+                //     if held > embassy_time::Duration::from_secs(1) {
+                //         input_events.push(InputEvent::Hold);
+                //     }
+                // }
                 // match button_state {
                 // async_button::ButtonEvent::ShortPress { count } => {
                 //     input_events.push(if count == 1 {
@@ -66,7 +84,9 @@ pub async fn process_button_input(
                 // }
             }
         });
-        button.reset();
+        left_button.reset();
+        right_button.reset();
+        fn_button.reset();
         // Delay to achieve the desired polling rate
         ticker.next().await;
     }
